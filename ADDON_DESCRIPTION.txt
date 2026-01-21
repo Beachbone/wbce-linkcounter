@@ -1,0 +1,27 @@
+================================================================================
+LINK COUNTER - WBCE CMS Module
+================================================================================
+Version: 1.0.0
+Author: WBCE Community, Beach
+License: MIT License
+Platform: WBCE CMS 1.4.x or higher
+================================================================================
+
+ENGLISH
+-------
+
+Link Counter is a WBCE CMS module for tracking clicks on links with comprehensive statistics. It supports both external URLs and internal WBCE pages, making it ideal for monitoring downloads, external references, or any links requiring click tracking.
+
+The module includes two droplets for seamless frontend integration: [[LinkCounter]] creates tracked links using database titles, and [[LinkCounterStats]] displays a statistics table with the most clicked links. The backend interface provides link management with filtering, sorting, CSV export, and individual counter reset functionality.
+
+Security features include CSRF protection, SQL injection prevention, XSS protection, URL validation against malicious schemes, and open redirect prevention. All links can be activated/deactivated individually and include optional descriptions for internal organization.
+
+
+DEUTSCH
+-------
+
+Link Counter ist ein WBCE CMS Modul zum Tracken von Link-Klicks mit umfassenden Statistiken. Es unterstützt sowohl externe URLs als auch interne WBCE-Seiten und eignet sich ideal zum Überwachen von Downloads, externen Verweisen oder beliebigen Links, die ein Klick-Tracking benötigen.
+
+Das Modul enthält zwei Droplets zur nahtlosen Frontend-Integration: [[LinkCounter]] erstellt getrackte Links mit Titeln aus der Datenbank, und [[LinkCounterStats]] zeigt eine Statistik-Tabelle mit den meistgeklickten Links. Das Backend bietet Link-Verwaltung mit Filterung, Sortierung, CSV-Export und individueller Zähler-Zurücksetzung.
+
+Sicherheitsmerkmale umfassen CSRF-Schutz, SQL-Injection-Prävention, XSS-Schutz, URL-Validierung gegen schädliche Schemata und Open-Redirect-Prävention. Alle Links können einzeln aktiviert/deaktiviert werden und enthalten optionale Beschreibungen zur internen Organisation.

@@ -1,0 +1,126 @@
+<?php
+/**
+ * Link Counter - English Language
+ *
+ * @author      WBCE Community, Beach
+ * @copyright   2026-01 WBCE Community, Beach
+ * @license     MIT License
+ * @version     1.0.0
+ */
+
+if (!defined('WB_PATH')) {
+    exit('Direct access is not allowed');
+}
+
+// Module Info
+$MOD_LINKCOUNTER = array(
+    'MODULE_NAME'           => 'Link Counter',
+    'MODULE_DESCRIPTION'    => 'Manage links with click statistics',
+
+    // Navigation
+    'MENU_OVERVIEW'         => 'Overview',
+    'MENU_ADD'              => 'Add New',
+    'MENU_STATS'            => 'Statistics',
+
+    // Overview/List
+    'HEADING_OVERVIEW'      => 'Link Overview',
+    'TEXT_NO_DOWNLOADS'     => 'No links available yet.',
+    'TEXT_ADD_FIRST'        => 'Create your first link.',
+
+    // Table Headers
+    'TH_ID'                 => 'ID',
+    'TH_TITLE'              => 'Title',
+    'TH_URL'                => 'URL',
+    'TH_DESCRIPTION'        => 'Description',
+    'TH_COUNTER'            => 'Clicks',
+    'TH_STATUS'             => 'Status',
+    'TH_CREATED'            => 'Created',
+    'TH_ACTIONS'            => 'Actions',
+
+    // Status
+    'STATUS_ACTIVE'         => 'Active',
+    'STATUS_INACTIVE'       => 'Inactive',
+
+    // Add/Edit Form
+    'HEADING_ADD'           => 'Add New Link',
+    'HEADING_EDIT'          => 'Edit Link',
+    'LABEL_TITLE'           => 'Title',
+    'LABEL_LINK_TYPE'       => 'Link Type',
+    'LABEL_URL'             => 'Target URL',
+    'LABEL_PAGE'            => 'Internal Page',
+    'LABEL_DESCRIPTION'     => 'Description',
+    'LABEL_ACTIVE'          => 'Active',
+    'LINK_TYPE_URL'         => 'External URL',
+    'LINK_TYPE_PAGE'        => 'Internal Page',
+    'SELECT_PAGE'           => '-- Select Page --',
+    'PLACEHOLDER_TITLE'     => 'e.g. Product Catalog 2026',
+    'PLACEHOLDER_URL'       => 'https://example.com/download.pdf',
+    'PLACEHOLDER_DESC'      => 'Optional: Description for internal purposes',
+    'HELP_TITLE'            => 'Display name for the link',
+    'HELP_LINK_TYPE'        => 'Choose between external URL or internal WBCE page',
+    'HELP_URL'              => 'Full URL (e.g. https://example.com/file.pdf)',
+    'HELP_PAGE'             => 'Select a page from your WBCE installation',
+    'HELP_DESCRIPTION'      => 'Internal note or description',
+    'HELP_ACTIVE'           => 'Only active links are displayed in frontend',
+
+    // Buttons
+    'BTN_SAVE'              => 'Save',
+    'BTN_CANCEL'            => 'Cancel',
+    'BTN_BACK'              => 'Back',
+    'BTN_ADD'               => 'Add',
+    'BTN_EDIT'              => 'Edit',
+    'BTN_DELETE'            => 'Delete',
+    'BTN_RESET_COUNTER'     => 'Reset Counter',
+    'BTN_EXPORT'            => 'Export as CSV',
+    'BTN_VIEW_STATS'        => 'Statistics',
+
+    // Messages - Success
+    'SUCCESS_SAVED'         => 'Link saved successfully.',
+    'SUCCESS_DELETED'       => 'Link deleted successfully.',
+    'SUCCESS_COUNTER_RESET' => 'Counter reset successfully.',
+
+    // Messages - Errors
+    'ERROR_TITLE_EMPTY'     => 'Please enter a title.',
+    'ERROR_URL_EMPTY'       => 'Please enter a URL.',
+    'ERROR_URL_INVALID'     => 'The entered URL is invalid.',
+    'ERROR_NOT_FOUND'       => 'Link not found.',
+    'ERROR_DELETE_FAILED'   => 'Error deleting link.',
+    'ERROR_SAVE_FAILED'     => 'Error saving link.',
+    'ERROR_SECURITY'        => 'Security error: Invalid token.',
+
+    // Confirm Dialogs
+    'CONFIRM_DELETE'        => 'Do you really want to delete this link?',
+    'CONFIRM_RESET'         => 'Do you really want to reset the counter?',
+
+    // Statistics
+    'HEADING_STATS'         => 'Link Statistics',
+    'TEXT_TOTAL_CLICKS'     => 'Total Clicks',
+    'TEXT_AVG_CLICKS'       => 'Average',
+    'TEXT_TOP_DOWNLOADS'    => 'Top Links',
+
+    // Export
+    'EXPORT_FILENAME'       => 'linkcounter-export',
+
+    // Droplet Help
+    'DROPLET_USAGE_HEADING'     => 'Droplet Usage',
+    'DROPLET_CODE_HEADING'      => 'Droplet Code for this Link',
+    'DROPLET_CODE_INFO'         => 'The link text will be automatically taken from the title field.',
+    'DROPLET_LINKCOUNTER_DESC'  => 'Creates a tracked link using the title from the database as link text.',
+    'DROPLET_LINKSTATS_DESC'    => 'Displays a table with link statistics showing the most clicked links.',
+
+    // Filter
+    'FILTER_ALL'            => 'All',
+    'FILTER_ACTIVE'         => 'Active',
+    'FILTER_INACTIVE'       => 'Inactive',
+
+    // Sort
+    'SORT_BY'               => 'Sort by',
+    'SORT_TITLE_ASC'        => 'Title (A-Z)',
+    'SORT_TITLE_DESC'       => 'Title (Z-A)',
+    'SORT_CLICKS_ASC'       => 'Clicks (ascending)',
+    'SORT_CLICKS_DESC'      => 'Clicks (descending)',
+    'SORT_DATE_ASC'         => 'Date (oldest first)',
+    'SORT_DATE_DESC'        => 'Date (newest first)',
+);
+
+?>

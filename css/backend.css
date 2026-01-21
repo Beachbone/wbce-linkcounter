@@ -1,0 +1,619 @@
+/**
+ * Link Counter - Backend Stylesheet
+ *
+ * @author      WBCE Community, Beach
+ * @copyright   2026-01 WBCE Community, Beach
+ * @license     MIT License
+ * @version     1.0.0
+ */
+
+/* Main Container */
+.linkcounter-admin {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.linkcounter-admin h2 {
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Action Bar */
+.action-bar {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.action-bar .btn,
+.action-bar button,
+.action-bar a.btn {
+    margin: 0 !important;
+}
+
+.action-bar form {
+    margin: 0 !important;
+    display: inline-flex !important;
+}
+
+/* Filter and Sort Bar */
+.filter-sort-bar {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-group,
+.sort-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-group label,
+.sort-group label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.filter-group select,
+.sort-group select {
+    padding: 6px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background: white;
+    min-width: 200px;
+}
+
+/* Table Styles */
+.linkcounter-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+.linkcounter-table thead {
+    background: #e9ecef;
+}
+
+.linkcounter-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.linkcounter-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.linkcounter-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.linkcounter-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Column widths */
+.linkcounter-table th:nth-child(1),
+.linkcounter-table td:nth-child(1) {
+    width: 60px; /* ID */
+}
+
+.linkcounter-table th:nth-child(2),
+.linkcounter-table td:nth-child(2) {
+    width: 25%; /* Title */
+}
+
+.linkcounter-table th:nth-child(3),
+.linkcounter-table td:nth-child(3) {
+    width: auto; /* URL - flexible */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.linkcounter-table th:nth-child(4),
+.linkcounter-table td:nth-child(4) {
+    width: 80px; /* Counter */
+    text-align: center;
+}
+
+.linkcounter-table th:nth-child(5),
+.linkcounter-table td:nth-child(5) {
+    width: 90px; /* Status */
+}
+
+.linkcounter-table th:nth-child(6),
+.linkcounter-table td:nth-child(6) {
+    width: 130px; /* Created */
+}
+
+.linkcounter-table th:nth-child(7),
+.linkcounter-table td:nth-child(7) {
+    width: 100px; /* Actions - fixed width */
+}
+
+.linkcounter-table .actions {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.linkcounter-table .actions .btn {
+    margin-left: 5px !important;
+    display: inline-flex !important;
+}
+
+.linkcounter-table .actions form {
+    display: inline !important;
+    margin: 0 !important;
+}
+
+/* Badge Styles */
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: 3px;
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.badge-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-lg {
+    padding: 8px 16px;
+    font-size: 18px;
+}
+
+/* Form Styles */
+.linkcounter-form {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group label.required::after {
+    content: " *";
+    color: #dc3545;
+}
+
+.form-control {
+    width: 100%;
+    padding: 4px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.text-muted {
+    color: #6c757d;
+}
+
+/* Checkbox */
+.form-check {
+    padding-left: 0;
+}
+
+.form-check-input {
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.form-check-label {
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Counter Display */
+.counter-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    border-left: 4px solid #17a2b8;
+}
+
+.counter-display {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+/* Form Actions */
+.form-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    gap: 10px;
+}
+
+/* Button Styles - Override all WBCE defaults */
+.linkcounter-admin .btn,
+.action-bar .btn,
+.action-bar button,
+.action-bar a.btn,
+.form-actions .btn,
+.form-actions button,
+.form-actions a.btn,
+button.btn,
+a.btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 1.5 !important;
+    height: 38px !important;
+    text-align: center;
+    text-decoration: none !important;
+    border: 1px solid !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+}
+
+.btn [class^="icon-"],
+.btn [class*=" icon-"],
+button [class^="icon-"],
+button [class*=" icon-"],
+a.btn [class^="icon-"],
+a.btn [class*=" icon-"] {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    color: inherit !important;
+    font-size: 16px !important;
+}
+
+/* Ensure icons are visible in buttons */
+.btn-warning [class^="icon-"],
+.btn-warning [class*=" icon-"] {
+    color: #212529 !important;
+}
+
+.btn-danger [class^="icon-"],
+.btn-danger [class*=" icon-"] {
+    color: #fff !important;
+}
+
+.btn-primary [class^="icon-"],
+.btn-primary [class*=" icon-"] {
+    color: #fff !important;
+}
+
+.btn-secondary [class^="icon-"],
+.btn-secondary [class*=" icon-"] {
+    color: #fff !important;
+}
+
+.linkcounter-admin .btn-primary,
+.action-bar .btn-primary,
+.form-actions .btn-primary,
+button.btn-primary,
+a.btn-primary {
+    color: #fff !important;
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+}
+
+.linkcounter-admin .btn-primary:hover,
+.action-bar .btn-primary:hover,
+.form-actions .btn-primary:hover,
+button.btn-primary:hover,
+a.btn-primary:hover {
+    background-color: #0056b3 !important;
+    border-color: #004085 !important;
+}
+
+.linkcounter-admin .btn-secondary,
+.action-bar .btn-secondary,
+.form-actions .btn-secondary,
+button.btn-secondary,
+a.btn-secondary {
+    color: #fff !important;
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+.linkcounter-admin .btn-secondary:hover,
+.action-bar .btn-secondary:hover,
+.form-actions .btn-secondary:hover,
+button.btn-secondary:hover,
+a.btn-secondary:hover {
+    background-color: #545b62 !important;
+    border-color: #4e555b !important;
+}
+
+.btn-warning,
+.linkcounter-table .btn-warning {
+    color: #212529 !important;
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+}
+
+.btn-warning:hover,
+.linkcounter-table .btn-warning:hover {
+    background-color: #e0a800 !important;
+    border-color: #d39e00 !important;
+}
+
+.btn-danger,
+.linkcounter-table .btn-danger {
+    color: #fff !important;
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.btn-danger:hover,
+.linkcounter-table .btn-danger:hover {
+    background-color: #c82333 !important;
+    border-color: #bd2130 !important;
+}
+
+.linkcounter-admin .btn-sm,
+.linkcounter-table .btn-sm,
+button.btn-sm,
+a.btn-sm {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    line-height: 1.4 !important;
+}
+
+/* Icon-only buttons in table */
+.linkcounter-table .actions .btn-sm {
+    width: 36px !important;
+    min-width: 36px !important;
+    padding: 6px !important;
+    justify-content: center !important;
+}
+
+/* Icons in small buttons need space */
+.btn-sm [class^="icon-"],
+.btn-sm [class*=" icon-"],
+button.btn-sm [class^="icon-"],
+button.btn-sm [class*=" icon-"] {
+    font-size: 14px !important;
+    min-width: 14px !important;
+}
+
+.btn-outline-secondary {
+    color: #6c757d;
+    background-color: transparent;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    color: #fff;
+    background-color: #6c757d;
+}
+
+.btn-outline-primary {
+    color: #007bff;
+    background-color: transparent;
+    border-color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #007bff;
+}
+
+/* Alert Styles */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* Droplet Help Section */
+.droplet-help {
+    margin-top: 40px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.droplet-help h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #333;
+}
+
+.help-box {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #007bff;
+    border-radius: 4px;
+}
+
+.help-box h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #007bff;
+}
+
+.help-box code {
+    display: block;
+    padding: 10px;
+    margin-top: 10px;
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #d63384;
+}
+
+/* Droplet Usage Box */
+.droplet-usage-box {
+    margin-top: 30px;
+    padding: 20px;
+    background: #e7f3ff;
+    border: 1px solid #b3d9ff;
+    border-radius: 4px;
+}
+
+.droplet-usage-box h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #0056b3;
+}
+
+.code-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.code-block code {
+    flex: 1;
+    padding: 10px;
+    background: white;
+    border: 1px solid #b3d9ff;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #d63384;
+}
+
+.copy-btn {
+    flex-shrink: 0;
+}
+
+/* Utility Classes */
+.text-muted {
+    color: #6c757d !important;
+}
+
+small {
+    font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .linkcounter-admin {
+        padding: 10px;
+    }
+
+    .action-bar {
+        flex-direction: column;
+    }
+
+    .filter-sort-bar {
+        flex-direction: column;
+    }
+
+    .linkcounter-table {
+        font-size: 12px;
+    }
+
+    .linkcounter-table th,
+    .linkcounter-table td {
+        padding: 8px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
