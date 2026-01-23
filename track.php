@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.0.0
+ * @version     1.1.0
  */
 
 if (!defined('WB_PATH')) {
@@ -14,6 +14,26 @@ if (!defined('WB_PATH')) {
 
 global $database;
 $table = TABLE_PREFIX . 'mod_linkcounter';
+$settings_table = TABLE_PREFIX . 'mod_linkcounter_settings';
+
+/**
+ * Get safe redirect URL for blocked crawlers
+ * Returns HTTP_REFERER if it's from the same domain, otherwise homepage
+ */
+function getSafeRedirectUrl() {
+    if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
+        $referer = $_SERVER['HTTP_REFERER'];
+        $referer_host = parse_url($referer, PHP_URL_HOST);
+        $current_host = parse_url(WB_URL, PHP_URL_HOST);
+
+        // Only redirect to referer if it's from the same domain (security check)
+        if ($referer_host === $current_host) {
+            return $referer;
+        }
+    }
+    // Fallback to homepage
+    return WB_URL;
+}
 
 // Get and validate ID parameter
 $id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -36,9 +56,90 @@ if ($result->numRows() == 0) {
 
 $download = $result->fetchRow(MYSQLI_ASSOC);
 
-// Increment counter
-$update_sql = "UPDATE `$table` SET `counter` = `counter` + 1 WHERE `id` = $id";
-$database->query($update_sql);
+// === CRAWLER PROTECTION (OPTIONAL) ===
+$skip_counter = false;
+
+// Load crawler protection settings
+$settings_result = $database->query("SELECT `setting_key`, `setting_value` FROM `$settings_table`");
+$settings = array();
+if ($settings_result && $settings_result->numRows() > 0) {
+    while ($row = $settings_result->fetchRow(MYSQLI_ASSOC)) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+    }
+}
+
+$crawler_protection_enabled = isset($settings['crawler_protection_enabled']) && $settings['crawler_protection_enabled'] == '1';
+$min_delay = isset($settings['crawler_min_delay']) ? (int)$settings['crawler_min_delay'] : 500;
+$crawler_action = isset($settings['crawler_action']) ? $settings['crawler_action'] : 'skip_count';
+
+// Check if timestamps are provided and protection is enabled
+if ($crawler_protection_enabled && isset($_GET['_t']) && !empty($_GET['_t'])) {
+
+    // Decode timestamp parameter
+    $encoded = $_GET['_t'];
+
+    try {
+        // Base64 decode
+        $decoded = base64_decode($encoded, true);
+
+        if ($decoded !== false) {
+            // XOR decode (reverse the XOR encoding from frontend)
+            $xor_key = 42;
+            $xor_decoded = '';
+            for ($i = 0; $i < strlen($decoded); $i++) {
+                $xor_decoded .= chr(ord($decoded[$i]) ^ $xor_key);
+            }
+
+            // Split timestamps
+            if (strpos($xor_decoded, '|') !== false) {
+                list($pageLoadTime, $clickTime) = explode('|', $xor_decoded, 2);
+
+                // Validate: Are these valid numbers?
+                if (is_numeric($pageLoadTime) && is_numeric($clickTime)) {
+                    $timeDiff = (int)$clickTime - (int)$pageLoadTime;
+
+                    // Check if click was too fast (crawler behavior)
+                    if ($timeDiff < $min_delay) {
+                        // Crawler detected
+                        error_log("LinkCounter: Potential crawler detected - ID $id, Time: {$timeDiff}ms");
+
+                        if ($crawler_action == 'block') {
+                            // Block and redirect to referring page
+                            header('Location: ' . getSafeRedirectUrl());
+                            exit();
+                        } else {
+                            // Skip counter increment but continue with redirect
+                            $skip_counter = true;
+                        }
+                    }
+                }
+            }
+        }
+    } catch (Exception $e) {
+        // Invalid timestamp format - treat as normal click
+        error_log("LinkCounter: Error decoding timestamp for ID $id: " . $e->getMessage());
+    }
+} elseif ($crawler_protection_enabled && !isset($_GET['_t'])) {
+    // Protection enabled but no timestamp provided
+    // This could be a direct call or crawler without JavaScript
+    error_log("LinkCounter: No timestamp provided for ID $id (possible crawler or direct access)");
+
+    if ($crawler_action == 'block') {
+        // Block access without timestamp and redirect to referring page
+        header('Location: ' . getSafeRedirectUrl());
+        exit();
+    } else {
+        // Skip counting but allow redirect
+        $skip_counter = true;
+    }
+}
+// === END CRAWLER PROTECTION ===
+
+// Increment counter (only if not skipped by crawler protection)
+if (!$skip_counter) {
+    $update_sql = "UPDATE `$table` SET `counter` = `counter` + 1 WHERE `id` = $id";
+    $database->query($update_sql);
+}
 
 // Determine target URL based on link type
 if ($download['link_type'] == 'page' && !empty($download['page_id'])) {

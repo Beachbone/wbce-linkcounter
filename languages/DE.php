@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.0.0
+ * @version     1.1.0
  */
 
 if (!defined('WB_PATH')) {
@@ -73,6 +73,7 @@ $MOD_LINKCOUNTER = array(
     'BTN_RESET_COUNTER'     => 'Zähler zurücksetzen',
     'BTN_EXPORT'            => 'Als CSV exportieren',
     'BTN_VIEW_STATS'        => 'Statistiken',
+    'BTN_SETTINGS'          => 'Einstellungen',
 
     // Messages - Success
     'SUCCESS_SAVED'         => 'Link erfolgreich gespeichert.',
@@ -115,12 +116,33 @@ $MOD_LINKCOUNTER = array(
 
     // Sort
     'SORT_BY'               => 'Sortieren nach',
+    'SORT_ID_ASC'           => 'ID (aufsteigend)',
+    'SORT_ID_DESC'          => 'ID (absteigend)',
     'SORT_TITLE_ASC'        => 'Titel (A-Z)',
     'SORT_TITLE_DESC'       => 'Titel (Z-A)',
     'SORT_CLICKS_ASC'       => 'Klicks (aufsteigend)',
     'SORT_CLICKS_DESC'      => 'Klicks (absteigend)',
     'SORT_DATE_ASC'         => 'Datum (älteste zuerst)',
     'SORT_DATE_DESC'        => 'Datum (neueste zuerst)',
+
+    // Settings
+    'HEADING_SETTINGS'              => 'Einstellungen - Crawler-Schutz',
+    'SETTINGS_CRAWLER_PROTECTION'   => 'Crawler-Schutz Konfiguration',
+    'SETTINGS_CRAWLER_DESCRIPTION'  => 'Der Crawler-Schutz filtert automatisierte Link-Aufrufe anhand der Zeit zwischen Seitenaufbau und Klick. Dies reduziert Bot-Traffic in Ihren Statistiken.',
+    'SETTINGS_ENABLE_PROTECTION'    => 'Crawler-Schutz aktivieren',
+    'SETTINGS_ENABLE_PROTECTION_HELP' => 'Wenn aktiviert, werden Klicks mit zu kurzer Verzögerung als Crawler erkannt.',
+    'SETTINGS_MIN_DELAY'            => 'Minimale Verzögerung (in Millisekunden)',
+    'SETTINGS_MIN_DELAY_HELP'       => 'Klicks die schneller erfolgen werden als Crawler erkannt. Empfohlen: 500ms (0,5 Sekunden). Bereich: 100-10000ms.',
+    'SETTINGS_CRAWLER_ACTION'       => 'Aktion bei erkanntem Crawler',
+    'SETTINGS_CRAWLER_ACTION_HELP'  => 'Wählen Sie, was passieren soll wenn ein Crawler erkannt wird.',
+    'SETTINGS_ACTION_SKIP_COUNT'    => 'Weiterleiten ohne zu zählen (empfohlen)',
+    'SETTINGS_ACTION_BLOCK'         => 'Nicht weiterleiten',
+    'SETTINGS_HOW_IT_WORKS'         => 'Wie funktioniert der Crawler-Schutz?',
+    'SETTINGS_HOW_POINT_1'          => 'JavaScript erfasst die Zeit beim Seitenaufbau und beim Klick auf einen Link',
+    'SETTINGS_HOW_POINT_2'          => 'Die Zeitstempel werden verschleiert als URL-Parameter übertragen',
+    'SETTINGS_HOW_POINT_3'          => 'Der Server prüft die Zeitdifferenz gegen die eingestellte Mindestzeit',
+    'SETTINGS_HOW_POINT_4'          => 'Crawler ohne JavaScript oder mit zu kurzer Wartezeit werden automatisch gefiltert',
+    'SUCCESS_SETTINGS_SAVED'        => 'Einstellungen erfolgreich gespeichert.',
 );
 
 ?>

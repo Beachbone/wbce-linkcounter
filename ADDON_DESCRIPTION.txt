@@ -1,7 +1,7 @@
 ================================================================================
 LINK COUNTER - WBCE CMS Module
 ================================================================================
-Version: 1.0.0
+Version: 1.1.0
 Author: WBCE Community, Beach
 License: MIT License
 Platform: WBCE CMS 1.4.x or higher
@@ -12,9 +12,11 @@ ENGLISH
 
 Link Counter is a WBCE CMS module for tracking clicks on links with comprehensive statistics. It supports both external URLs and internal WBCE pages, making it ideal for monitoring downloads, external references, or any links requiring click tracking.
 
-The module includes two droplets for seamless frontend integration: [[LinkCounter]] creates tracked links using database titles, and [[LinkCounterStats]] displays a statistics table with the most clicked links. The backend interface provides link management with filtering, sorting, CSV export, and individual counter reset functionality.
+NEW in version 1.1.0: Advanced crawler protection using time-based bot detection filters automated traffic from your statistics. Configure minimum delay thresholds and choose between skip-counting or blocking detected crawlers.
 
-Security features include CSRF protection, SQL injection prevention, XSS protection, URL validation against malicious schemes, and open redirect prevention. All links can be activated/deactivated individually and include optional descriptions for internal organization.
+The module includes two droplets for seamless frontend integration: [[LinkCounter]] creates tracked links using database titles, and [[LinkCounterStats]] displays a statistics table with the most clicked links. The backend interface provides link management with filtering, sorting, CSV export, crawler protection settings, and individual counter reset functionality.
+
+Security features include CSRF protection, SQL injection prevention, XSS protection, URL validation against malicious schemes, open redirect prevention, and optional crawler protection with timestamp obfuscation. All links can be activated/deactivated individually and include optional descriptions for internal organization.
 
 
 DEUTSCH
@@ -22,6 +24,8 @@ DEUTSCH
 
 Link Counter ist ein WBCE CMS Modul zum Tracken von Link-Klicks mit umfassenden Statistiken. Es unterstützt sowohl externe URLs als auch interne WBCE-Seiten und eignet sich ideal zum Überwachen von Downloads, externen Verweisen oder beliebigen Links, die ein Klick-Tracking benötigen.
 
-Das Modul enthält zwei Droplets zur nahtlosen Frontend-Integration: [[LinkCounter]] erstellt getrackte Links mit Titeln aus der Datenbank, und [[LinkCounterStats]] zeigt eine Statistik-Tabelle mit den meistgeklickten Links. Das Backend bietet Link-Verwaltung mit Filterung, Sortierung, CSV-Export und individueller Zähler-Zurücksetzung.
+NEU in Version 1.1.0: Erweiterter Crawler-Schutz mit zeitbasierter Bot-Erkennung filtert automatisierten Traffic aus Ihren Statistiken. Konfigurierbare Mindestzeiten und wählbare Modi (Nicht zählen oder Blockieren) für erkannte Crawler.
 
-Sicherheitsmerkmale umfassen CSRF-Schutz, SQL-Injection-Prävention, XSS-Schutz, URL-Validierung gegen schädliche Schemata und Open-Redirect-Prävention. Alle Links können einzeln aktiviert/deaktiviert werden und enthalten optionale Beschreibungen zur internen Organisation.
+Das Modul enthält zwei Droplets zur nahtlosen Frontend-Integration: [[LinkCounter]] erstellt getrackte Links mit Titeln aus der Datenbank, und [[LinkCounterStats]] zeigt eine Statistik-Tabelle mit den meistgeklickten Links. Das Backend bietet Link-Verwaltung mit Filterung, Sortierung, CSV-Export, Crawler-Schutz-Einstellungen und individueller Zähler-Zurücksetzung.
+
+Sicherheitsmerkmale umfassen CSRF-Schutz, SQL-Injection-Prävention, XSS-Schutz, URL-Validierung gegen schädliche Schemata, Open-Redirect-Prävention und optionalen Crawler-Schutz mit Timestamp-Verschleierung. Alle Links können einzeln aktiviert/deaktiviert werden und enthalten optionale Beschreibungen zur internen Organisation.

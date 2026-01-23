@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.0.0
+ * @version     1.1.0
  */
 
 if(!defined('WB_PATH')) exit("Cannot access this file directly ".__FILE__);
@@ -37,6 +37,28 @@ if ($check_table->numRows() == 0) {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
     $database->query($sql);
+}
+
+// Create settings table for crawler protection
+$settings_table = TABLE_PREFIX . 'mod_linkcounter_settings';
+$check_settings = $database->query("SHOW TABLES LIKE '$settings_table'");
+
+if ($check_settings->numRows() == 0) {
+    $sql = "CREATE TABLE IF NOT EXISTS `$settings_table` (
+        `setting_key` VARCHAR(50) NOT NULL,
+        `setting_value` VARCHAR(255) NOT NULL DEFAULT '',
+        PRIMARY KEY (`setting_key`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+    $database->query($sql);
+
+    // Insert default values for crawler protection
+    $database->query("INSERT INTO `$settings_table` (`setting_key`, `setting_value`)
+                      VALUES ('crawler_protection_enabled', '0')");
+    $database->query("INSERT INTO `$settings_table` (`setting_key`, `setting_value`)
+                      VALUES ('crawler_min_delay', '500')");
+    $database->query("INSERT INTO `$settings_table` (`setting_key`, `setting_value`)
+                      VALUES ('crawler_action', 'skip_count')");
 }
 
 // Install Droplets
@@ -94,8 +116,16 @@ $link_text = htmlspecialchars($download['title']);
 // Generate track URL
 $track_url = WB_URL . '/modules/linkcounter/track.php?id=' . (int)$id;
 
-// Return link (URL is already safe as ID is cast to int)
-return '<a href="' . htmlspecialchars($track_url) . '" title="' . $link_text . '">' . $link_text . '</a>';
+// Load frontend JavaScript once (for crawler protection)
+static $js_loaded = false;
+$js_output = '';
+if (!$js_loaded) {
+    $js_output = '<script src="' . WB_URL . '/modules/linkcounter/js/frontend.js"></script>';
+    $js_loaded = true;
+}
+
+// Return link with data-attribute for crawler protection (URL is already safe as ID is cast to int)
+return $js_output . '<a href="' . htmlspecialchars($track_url) . '" title="' . $link_text . '" data-linkcounter-id="' . (int)$id . '" class="linkcounter-link">' . $link_text . '</a>';
 EOD;
 
         $description = 'Generates a tracked link. Parameters: id (required)';
@@ -132,16 +162,25 @@ $limit = isset($limit) && is_numeric($limit) ? (int)$limit : 10;
 global $database;
 $table = TABLE_PREFIX . 'mod_linkcounter';
 
+// Load frontend JavaScript once (for crawler protection)
+static $js_loaded = false;
+$js_output = '';
+if (!$js_loaded) {
+    $js_output = '<script src="' . WB_URL . '/modules/linkcounter/js/frontend.js"></script>';
+    $js_loaded = true;
+}
+
 // Get top downloads
 $sql = "SELECT * FROM `$table` WHERE `active` = 1 ORDER BY `counter` DESC LIMIT $limit";
 $result = $database->query($sql);
 
 if ($result->numRows() == 0) {
-    return '<p class="info">No links available yet.</p>';
+    return $js_output . '<p class="info">No links available yet.</p>';
 }
 
 // Build table
-$output = '<div class="linkcounter-stats">';
+$output = $js_output;
+$output .= '<div class="linkcounter-stats">';
 $output .= '<table class="table table-striped">';
 $output .= '<thead>';
 $output .= '<tr>';
@@ -159,7 +198,7 @@ while ($row = $result->fetchRow(MYSQLI_ASSOC)) {
     $output .= '<td>' . htmlspecialchars(substr($row['description'], 0, 100)) . (strlen($row['description']) > 100 ? '...' : '') . '</td>';
     $output .= '<td><strong>' . number_format($row['counter'], 0, ',', '.') . '</strong></td>';
     $track_url = WB_URL . '/modules/linkcounter/track.php?id=' . (int)$row['id'];
-    $output .= '<td><a href="' . htmlspecialchars($track_url) . '" class="btn btn-sm btn-primary">Link</a></td>';
+    $output .= '<td><a href="' . htmlspecialchars($track_url) . '" class="btn btn-sm btn-primary linkcounter-link" data-linkcounter-id="' . (int)$row['id'] . '">Link</a></td>';
     $output .= '</tr>';
 }
 

@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.0.0
+ * @version     1.1.0
  */
 
 if(!defined('WB_PATH')) exit("Cannot access this file directly ".__FILE__);
@@ -27,7 +27,7 @@ $table = TABLE_PREFIX . 'mod_linkcounter';
 
 // Handle filter and sort parameters
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
-$sort = isset($_GET['sort']) ? $_GET['sort'] : 'id_desc';
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'id_asc';
 
 // Build WHERE clause based on filter
 $where = '';
@@ -45,6 +45,12 @@ switch ($filter) {
 // Build ORDER BY clause based on sort
 $order_by = '';
 switch ($sort) {
+    case 'id_asc':
+        $order_by = "ORDER BY `id` ASC";
+        break;
+    case 'id_desc':
+        $order_by = "ORDER BY `id` DESC";
+        break;
     case 'title_asc':
         $order_by = "ORDER BY `title` ASC";
         break;
@@ -64,7 +70,7 @@ switch ($sort) {
         $order_by = "ORDER BY `created` DESC";
         break;
     default:
-        $order_by = "ORDER BY `id` DESC";
+        $order_by = "ORDER BY `id` ASC";
 }
 
 // Get all links
@@ -109,6 +115,9 @@ echo '<script src="' . WB_URL . '/modules/linkcounter/js/backend.js"></script>';
         <a href="<?php echo ADMIN_URL; ?>/admintools/tool.php?tool=linkcounter&action=add" class="btn btn-primary">
             <span class="icon-plus"></span> <?php echo $MOD_LINKCOUNTER['BTN_ADD']; ?>
         </a>
+        <a href="<?php echo ADMIN_URL; ?>/admintools/tool.php?tool=linkcounter&action=settings" class="btn btn-secondary">
+            ⚙️ <?php echo $MOD_LINKCOUNTER['BTN_SETTINGS']; ?>
+        </a>
         <form method="post" action="<?php echo WB_URL; ?>/modules/linkcounter/export.php">
             <?php echo $admin->getFTAN(); ?>
             <button type="submit" class="btn btn-secondary">
@@ -137,8 +146,11 @@ echo '<script src="' . WB_URL . '/modules/linkcounter/js/backend.js"></script>';
         <div class="sort-group">
             <label><?php echo $MOD_LINKCOUNTER['SORT_BY']; ?>:</label>
             <select id="sort-select" onchange="applySort()">
+                <option value="id_asc" <?php echo $sort == 'id_asc' ? 'selected' : ''; ?>>
+                    <?php echo $MOD_LINKCOUNTER['SORT_ID_ASC']; ?>
+                </option>
                 <option value="id_desc" <?php echo $sort == 'id_desc' ? 'selected' : ''; ?>>
-                    ID (<?php echo $MOD_LINKCOUNTER['SORT_DATE_DESC']; ?>)
+                    <?php echo $MOD_LINKCOUNTER['SORT_ID_DESC']; ?>
                 </option>
                 <option value="title_asc" <?php echo $sort == 'title_asc' ? 'selected' : ''; ?>>
                     <?php echo $MOD_LINKCOUNTER['SORT_TITLE_ASC']; ?>

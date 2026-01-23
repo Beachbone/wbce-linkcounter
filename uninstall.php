@@ -5,16 +5,19 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.0.0
+ * @version     1.1.0
  */
 
 if(!defined('WB_PATH')) exit("Cannot access this file directly ".__FILE__);
 
 global $database;
 
-// Drop module table
+// Drop module tables
 $table = TABLE_PREFIX . 'mod_linkcounter';
+$settings_table = TABLE_PREFIX . 'mod_linkcounter_settings';
+
 $database->query("DROP TABLE IF EXISTS `$table`");
+$database->query("DROP TABLE IF EXISTS `$settings_table`");
 
 // Remove Droplets
 $droplet_table = TABLE_PREFIX . 'mod_droplets';

@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.0.0
+ * @version     1.1.0
  */
 
 if (!defined('WB_PATH')) {
@@ -73,6 +73,7 @@ $MOD_LINKCOUNTER = array(
     'BTN_RESET_COUNTER'     => 'Reset Counter',
     'BTN_EXPORT'            => 'Export as CSV',
     'BTN_VIEW_STATS'        => 'Statistics',
+    'BTN_SETTINGS'          => 'Settings',
 
     // Messages - Success
     'SUCCESS_SAVED'         => 'Link saved successfully.',
@@ -115,12 +116,33 @@ $MOD_LINKCOUNTER = array(
 
     // Sort
     'SORT_BY'               => 'Sort by',
+    'SORT_ID_ASC'           => 'ID (ascending)',
+    'SORT_ID_DESC'          => 'ID (descending)',
     'SORT_TITLE_ASC'        => 'Title (A-Z)',
     'SORT_TITLE_DESC'       => 'Title (Z-A)',
     'SORT_CLICKS_ASC'       => 'Clicks (ascending)',
     'SORT_CLICKS_DESC'      => 'Clicks (descending)',
     'SORT_DATE_ASC'         => 'Date (oldest first)',
     'SORT_DATE_DESC'        => 'Date (newest first)',
+
+    // Settings
+    'HEADING_SETTINGS'              => 'Settings - Crawler Protection',
+    'SETTINGS_CRAWLER_PROTECTION'   => 'Crawler Protection Configuration',
+    'SETTINGS_CRAWLER_DESCRIPTION'  => 'Crawler protection filters automated link calls based on the time between page load and click. This reduces bot traffic in your statistics.',
+    'SETTINGS_ENABLE_PROTECTION'    => 'Enable crawler protection',
+    'SETTINGS_ENABLE_PROTECTION_HELP' => 'When enabled, clicks with too short delay will be detected as crawlers.',
+    'SETTINGS_MIN_DELAY'            => 'Minimum delay (in milliseconds)',
+    'SETTINGS_MIN_DELAY_HELP'       => 'Clicks that occur faster will be detected as crawlers. Recommended: 500ms (0.5 seconds). Range: 100-10000ms.',
+    'SETTINGS_CRAWLER_ACTION'       => 'Action when crawler detected',
+    'SETTINGS_CRAWLER_ACTION_HELP'  => 'Choose what should happen when a crawler is detected.',
+    'SETTINGS_ACTION_SKIP_COUNT'    => 'Redirect without counting (recommended)',
+    'SETTINGS_ACTION_BLOCK'         => 'Do not redirect',
+    'SETTINGS_HOW_IT_WORKS'         => 'How does crawler protection work?',
+    'SETTINGS_HOW_POINT_1'          => 'JavaScript captures the time at page load and when clicking a link',
+    'SETTINGS_HOW_POINT_2'          => 'The timestamps are obfuscated and transmitted as URL parameters',
+    'SETTINGS_HOW_POINT_3'          => 'The server checks the time difference against the configured minimum time',
+    'SETTINGS_HOW_POINT_4'          => 'Crawlers without JavaScript or with too short wait time are automatically filtered',
+    'SUCCESS_SETTINGS_SAVED'        => 'Settings saved successfully.',
 );
 
 ?>
