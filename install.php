@@ -28,6 +28,7 @@ if ($check_table->numRows() == 0) {
         `counter` INT(11) NOT NULL DEFAULT 0,
         `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        `open_target` ENUM('_self','_blank') NOT NULL DEFAULT '_self',
         `active` TINYINT(1) NOT NULL DEFAULT 1,
         PRIMARY KEY (`id`),
         INDEX `idx_active` (`active`),
@@ -124,8 +125,11 @@ if (!$js_loaded) {
     $js_loaded = true;
 }
 
+$open_target = isset($download['open_target']) ? $download['open_target'] : '_self';
+$target_attr = ($open_target === '_blank') ? ' target="_blank" rel="noopener noreferrer"' : '';
+
 // Return link with data-attribute for crawler protection (URL is already safe as ID is cast to int)
-return $js_output . '<a href="' . htmlspecialchars($track_url) . '" title="' . $link_text . '" data-linkcounter-id="' . (int)$id . '" class="linkcounter-link">' . $link_text . '</a>';
+return $js_output . '<a href="' . htmlspecialchars($track_url) . '"' . $target_attr . ' title="' . $link_text . '" data-linkcounter-id="' . (int)$id . '" class="linkcounter-link">' . $link_text . '</a>';
 EOD;
 
         $description = 'Generates a tracked link. Parameters: id (required)';
@@ -198,7 +202,9 @@ while ($row = $result->fetchRow(MYSQLI_ASSOC)) {
     $output .= '<td>' . htmlspecialchars(substr($row['description'], 0, 100)) . (strlen($row['description']) > 100 ? '...' : '') . '</td>';
     $output .= '<td><strong>' . number_format($row['counter'], 0, ',', '.') . '</strong></td>';
     $track_url = WB_URL . '/modules/linkcounter/track.php?id=' . (int)$row['id'];
-    $output .= '<td><a href="' . htmlspecialchars($track_url) . '" class="btn btn-sm btn-primary linkcounter-link" data-linkcounter-id="' . (int)$row['id'] . '">Link</a></td>';
+    $open_target = isset($row['open_target']) ? $row['open_target'] : '_self';
+    $target_attr = ($open_target === '_blank') ? ' target="_blank" rel="noopener noreferrer"' : '';
+    $output .= '<td><a href="' . htmlspecialchars($track_url) . '"' . $target_attr . ' class="btn btn-sm btn-primary linkcounter-link" data-linkcounter-id="' . (int)$row['id'] . '">Link</a></td>';
     $output .= '</tr>';
 }
 

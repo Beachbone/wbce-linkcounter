@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.1.0
+ * @version     1.2.0
  */
 
 if(!defined('WB_PATH')) exit("Cannot access this file directly ".__FILE__);
@@ -23,151 +23,114 @@ require_once(WB_PATH . '/modules/linkcounter/languages/' . $lang . '.php');
 global $database;
 $table = TABLE_PREFIX . 'mod_linkcounter';
 
-// Check if editing existing download
+// Check if editing existing link
 $edit_mode = false;
-$download = array(
-    'id' => 0,
-    'title' => '',
-    'link_type' => 'url',
-    'url' => '',
-    'page_id' => null,
+$download  = array(
+    'id'          => 0,
+    'title'       => '',
+    'link_type'   => 'url',
+    'url'         => '',
+    'page_id'     => null,
     'description' => '',
-    'active' => 1,
-    'counter' => 0
+    'open_target' => '_self',
+    'active'      => 1,
+    'counter'     => 0,
 );
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $id = (int)$_GET['id'];
+    $id     = (int)$_GET['id'];
     $result = $database->query("SELECT * FROM `$table` WHERE `id` = $id");
-
     if ($result->numRows() > 0) {
-        $download = $result->fetchRow(MYSQLI_ASSOC);
+        $download  = $result->fetchRow(MYSQLI_ASSOC);
         $edit_mode = true;
     }
 }
 
 // Get all pages from WBCE for dropdown
-$pages_table = TABLE_PREFIX . 'pages';
-$pages_query = "SELECT `page_id`, `menu_title`, `page_title`, `level`, `parent`
-                FROM `$pages_table`
-                WHERE `visibility` != 'deleted'
-                ORDER BY `position` ASC";
-$pages_result = $database->query($pages_query);
-
-// Build hierarchical page list
+$pages_table  = TABLE_PREFIX . 'pages';
+$pages_result = $database->query(
+    "SELECT `page_id`, `menu_title`, `page_title`, `level`
+     FROM `$pages_table`
+     WHERE `visibility` != 'deleted'
+     ORDER BY `position` ASC"
+);
 $pages = array();
 while ($page = $pages_result->fetchRow(MYSQLI_ASSOC)) {
-    $indent = str_repeat('&nbsp;&nbsp;&nbsp;', $page['level']);
+    $indent  = str_repeat('&nbsp;&nbsp;&nbsp;', $page['level']);
     $pages[] = array(
         'page_id' => $page['page_id'],
-        'title' => $indent . ($page['menu_title'] ? $page['menu_title'] : $page['page_title']),
-        'level' => $page['level']
+        'title'   => $indent . ($page['menu_title'] ? $page['menu_title'] : $page['page_title']),
     );
 }
 
-// Include CSS and JavaScript
+// Include CSS
 echo '<link rel="stylesheet" href="' . WB_URL . '/modules/linkcounter/css/backend.css">';
-echo '<script src="' . WB_URL . '/modules/linkcounter/js/backend.js"></script>';
-
 ?>
 
-<div class="linkcounter-admin">
-    <h2>
+<div class="lc-wrap">
+<div class="lc-stack">
+
+<?php
+// Alerts
+if (isset($_SESSION['linkcounter_success'])) {
+    echo '<div class="lc-alert lc-alert-ok"><i class="fa fa-check-circle"></i> ' . htmlspecialchars($_SESSION['linkcounter_success']) . '</div>';
+    unset($_SESSION['linkcounter_success']);
+}
+if (isset($_SESSION['linkcounter_error'])) {
+    echo '<div class="lc-alert lc-alert-error"><i class="fa fa-exclamation-circle"></i> ' . htmlspecialchars($_SESSION['linkcounter_error']) . '</div>';
+    unset($_SESSION['linkcounter_error']);
+}
+if (isset($_SESSION['linkcounter_errors']) && is_array($_SESSION['linkcounter_errors'])) {
+    echo '<div class="lc-alert lc-alert-error"><i class="fa fa-exclamation-circle"></i> ';
+    echo implode(' &bull; ', array_map('htmlspecialchars', $_SESSION['linkcounter_errors']));
+    echo '</div>';
+    unset($_SESSION['linkcounter_errors']);
+}
+?>
+
+<!-- Form Card -->
+<div class="lc-card-inner">
+    <div class="lc-section-title">
+        <i class="fa fa-<?php echo $edit_mode ? 'pencil' : 'plus'; ?>"></i>
         <?php echo $edit_mode ? $MOD_LINKCOUNTER['HEADING_EDIT'] : $MOD_LINKCOUNTER['HEADING_ADD']; ?>
-    </h2>
+    </div>
 
-    <?php
-    // Display success messages
-    if (isset($_SESSION['linkcounter_success'])) {
-        echo '<div class="alert alert-success">' . htmlspecialchars($_SESSION['linkcounter_success']) . '</div>';
-        unset($_SESSION['linkcounter_success']);
-    }
-
-    // Display error messages
-    if (isset($_SESSION['linkcounter_error'])) {
-        echo '<div class="alert alert-danger">' . htmlspecialchars($_SESSION['linkcounter_error']) . '</div>';
-        unset($_SESSION['linkcounter_error']);
-    }
-
-    // Display validation errors
-    if (isset($_SESSION['linkcounter_errors']) && is_array($_SESSION['linkcounter_errors'])) {
-        echo '<div class="alert alert-danger"><ul>';
-        foreach ($_SESSION['linkcounter_errors'] as $error) {
-            echo '<li>' . htmlspecialchars($error) . '</li>';
-        }
-        echo '</ul></div>';
-        unset($_SESSION['linkcounter_errors']);
-    }
-    ?>
-
-    <form action="<?php echo WB_URL; ?>/modules/linkcounter/save.php" method="post" class="linkcounter-form">
+    <form action="<?php echo WB_URL; ?>/modules/linkcounter/save.php" method="post">
         <?php echo $admin->getFTAN(); ?>
-
         <input type="hidden" name="id" value="<?php echo (int)$download['id']; ?>">
 
-        <!-- Title Field -->
-        <div class="form-group">
-            <label for="title" class="required">
-                <?php echo $MOD_LINKCOUNTER['LABEL_TITLE']; ?> *
-            </label>
-            <input type="text"
-                   id="title"
-                   name="title"
-                   class="form-control"
+        <!-- Title -->
+        <div class="lc-field">
+            <label for="title"><?php echo $MOD_LINKCOUNTER['LABEL_TITLE']; ?> *</label>
+            <input type="text" id="title" name="title" required
                    value="<?php echo htmlspecialchars($download['title']); ?>"
-                   placeholder="<?php echo $MOD_LINKCOUNTER['PLACEHOLDER_TITLE']; ?>"
-                   required>
-            <small class="form-text text-muted">
-                <?php echo $MOD_LINKCOUNTER['HELP_TITLE']; ?>
-            </small>
+                   placeholder="<?php echo htmlspecialchars($MOD_LINKCOUNTER['PLACEHOLDER_TITLE']); ?>">
+            <span class="lc-field-hint"><?php echo $MOD_LINKCOUNTER['HELP_TITLE']; ?></span>
         </div>
 
-        <!-- Link Type Field -->
-        <div class="form-group">
-            <label for="link_type" class="required">
-                <?php echo $MOD_LINKCOUNTER['LABEL_LINK_TYPE']; ?> *
-            </label>
-            <select id="link_type"
-                    name="link_type"
-                    class="form-control"
-                    onchange="toggleLinkFields()"
-                    required>
-                <option value="url" <?php echo $download['link_type'] == 'url' ? 'selected' : ''; ?>>
-                    <?php echo $MOD_LINKCOUNTER['LINK_TYPE_URL']; ?>
-                </option>
-                <option value="page" <?php echo $download['link_type'] == 'page' ? 'selected' : ''; ?>>
-                    <?php echo $MOD_LINKCOUNTER['LINK_TYPE_PAGE']; ?>
-                </option>
+        <!-- Link Type -->
+        <div class="lc-field">
+            <label for="link_type"><?php echo $MOD_LINKCOUNTER['LABEL_LINK_TYPE']; ?> *</label>
+            <select id="link_type" name="link_type" onchange="toggleLinkFields()">
+                <option value="url"  <?php echo $download['link_type'] == 'url'  ? 'selected' : ''; ?>><?php echo $MOD_LINKCOUNTER['LINK_TYPE_URL'];  ?></option>
+                <option value="page" <?php echo $download['link_type'] == 'page' ? 'selected' : ''; ?>><?php echo $MOD_LINKCOUNTER['LINK_TYPE_PAGE']; ?></option>
             </select>
-            <small class="form-text text-muted">
-                <?php echo $MOD_LINKCOUNTER['HELP_LINK_TYPE']; ?>
-            </small>
+            <span class="lc-field-hint"><?php echo $MOD_LINKCOUNTER['HELP_LINK_TYPE']; ?></span>
         </div>
 
-        <!-- URL Field -->
-        <div class="form-group" id="url-field">
-            <label for="url" class="required">
-                <?php echo $MOD_LINKCOUNTER['LABEL_URL']; ?> *
-            </label>
-            <input type="text"
-                   id="url"
-                   name="url"
-                   class="form-control"
+        <!-- URL -->
+        <div class="lc-field" id="url-field">
+            <label for="url"><?php echo $MOD_LINKCOUNTER['LABEL_URL']; ?> *</label>
+            <input type="text" id="url" name="url"
                    value="<?php echo htmlspecialchars($download['url']); ?>"
-                   placeholder="<?php echo $MOD_LINKCOUNTER['PLACEHOLDER_URL']; ?>">
-            <small class="form-text text-muted">
-                <?php echo $MOD_LINKCOUNTER['HELP_URL']; ?>
-            </small>
+                   placeholder="<?php echo htmlspecialchars($MOD_LINKCOUNTER['PLACEHOLDER_URL']); ?>">
+            <span class="lc-field-hint"><?php echo $MOD_LINKCOUNTER['HELP_URL']; ?></span>
         </div>
 
-        <!-- Page Field -->
-        <div class="form-group" id="page-field" style="display: none;">
-            <label for="page_id" class="required">
-                <?php echo $MOD_LINKCOUNTER['LABEL_PAGE']; ?> *
-            </label>
-            <select id="page_id"
-                    name="page_id"
-                    class="form-control">
+        <!-- Internal Page -->
+        <div class="lc-field" id="page-field" style="display:none;">
+            <label for="page_id"><?php echo $MOD_LINKCOUNTER['LABEL_PAGE']; ?> *</label>
+            <select id="page_id" name="page_id">
                 <option value=""><?php echo $MOD_LINKCOUNTER['SELECT_PAGE']; ?></option>
                 <?php foreach ($pages as $page): ?>
                     <option value="<?php echo $page['page_id']; ?>"
@@ -176,136 +139,97 @@ echo '<script src="' . WB_URL . '/modules/linkcounter/js/backend.js"></script>';
                     </option>
                 <?php endforeach; ?>
             </select>
-            <small class="form-text text-muted">
-                <?php echo $MOD_LINKCOUNTER['HELP_PAGE']; ?>
-            </small>
+            <span class="lc-field-hint"><?php echo $MOD_LINKCOUNTER['HELP_PAGE']; ?></span>
         </div>
 
-        <!-- Description Field -->
-        <div class="form-group">
-            <label for="description">
-                <?php echo $MOD_LINKCOUNTER['LABEL_DESCRIPTION']; ?>
+        <!-- Description -->
+        <div class="lc-field">
+            <label for="description"><?php echo $MOD_LINKCOUNTER['LABEL_DESCRIPTION']; ?></label>
+            <textarea id="description" name="description" rows="3"
+                      placeholder="<?php echo htmlspecialchars($MOD_LINKCOUNTER['PLACEHOLDER_DESC']); ?>"><?php echo htmlspecialchars($download['description']); ?></textarea>
+            <span class="lc-field-hint"><?php echo $MOD_LINKCOUNTER['HELP_DESCRIPTION']; ?></span>
+        </div>
+
+        <!-- Toggles -->
+        <div class="lc-toggle-row">
+            <div class="lc-toggle-label">
+                <div class="lc-toggle-title"><?php echo $MOD_LINKCOUNTER['LABEL_OPEN_TARGET']; ?></div>
+                <div class="lc-toggle-hint"><?php echo $MOD_LINKCOUNTER['HELP_OPEN_TARGET']; ?></div>
+            </div>
+            <label class="lc-switch">
+                <input type="checkbox" name="open_target" value="_blank"
+                       <?php echo ($download['open_target'] === '_blank') ? 'checked' : ''; ?>>
+                <span class="lc-switch-track"></span>
+                <span class="lc-switch-handle"></span>
             </label>
-            <textarea id="description"
-                      name="description"
-                      class="form-control"
-                      rows="4"
-                      placeholder="<?php echo $MOD_LINKCOUNTER['PLACEHOLDER_DESC']; ?>"><?php echo htmlspecialchars($download['description']); ?></textarea>
-            <small class="form-text text-muted">
-                <?php echo $MOD_LINKCOUNTER['HELP_DESCRIPTION']; ?>
-            </small>
         </div>
 
-        <!-- Active Checkbox -->
-        <div class="form-group form-check">
-            <input type="checkbox"
-                   id="active"
-                   name="active"
-                   class="form-check-input"
-                   value="1"
-                   <?php echo $download['active'] ? 'checked' : ''; ?>>
-            <label for="active" class="form-check-label">
-                <?php echo $MOD_LINKCOUNTER['LABEL_ACTIVE']; ?>
+        <div class="lc-toggle-row">
+            <div class="lc-toggle-label">
+                <div class="lc-toggle-title"><?php echo $MOD_LINKCOUNTER['LABEL_ACTIVE']; ?></div>
+                <div class="lc-toggle-hint"><?php echo $MOD_LINKCOUNTER['HELP_ACTIVE']; ?></div>
+            </div>
+            <label class="lc-switch">
+                <input type="checkbox" name="active" value="1"
+                       <?php echo $download['active'] ? 'checked' : ''; ?>>
+                <span class="lc-switch-track"></span>
+                <span class="lc-switch-handle"></span>
             </label>
-            <small class="form-text text-muted">
-                <?php echo $MOD_LINKCOUNTER['HELP_ACTIVE']; ?>
-            </small>
         </div>
-
-
 
         <!-- Buttons -->
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-                <span class="icon-save"></span> <?php echo $MOD_LINKCOUNTER['BTN_SAVE']; ?>
+        <div class="lc-form-actions">
+            <button type="submit" class="lc-save-btn">
+                <i class="fa fa-floppy-o"></i> <?php echo $MOD_LINKCOUNTER['BTN_SAVE']; ?>
             </button>
-            <a href="<?php echo ADMIN_URL; ?>/admintools/tool.php?tool=linkcounter" class="btn btn-secondary">
-                <span class="icon-cancel"></span> <?php echo $MOD_LINKCOUNTER['BTN_CANCEL']; ?>
+            <a href="<?php echo ADMIN_URL; ?>/admintools/tool.php?tool=linkcounter" class="lc-btn lc-btn-secondary">
+                <i class="fa fa-times"></i> <?php echo $MOD_LINKCOUNTER['BTN_CANCEL']; ?>
             </a>
         </div>
     </form>
-    
-        <!-- Counter Info (only in edit mode) -->
-        <?php if ($edit_mode): ?>
-            <div class="form-group counter-info" style="display: flex; align-items: center; gap: 10px;">
-                <label style="margin-bottom: 0;"><?php echo $MOD_LINKCOUNTER['TH_COUNTER']; ?>:</label>
-                <span class="badge badge-info badge-lg">
-                    <?php echo number_format($download['counter'], 0, ',', '.'); ?>
-                </span>
-            </div>
-        <!-- Reset Counter Form (outside main form to avoid nesting) -->
-        <div style="margin-top: 20px;">
-            <form method="post" action="<?php echo WB_URL; ?>/modules/linkcounter/reset_counter.php" style="display: inline;">
-                <?php echo $admin->getFTAN(); ?>
-                <input type="hidden" name="id" value="<?php echo (int)$download['id']; ?>">
-                <button type="submit"
-                        class="btn btn-sm btn-outline-secondary"
-                        onclick="return confirm('<?php echo $MOD_LINKCOUNTER['CONFIRM_RESET']; ?>');">
-                    <?php echo $MOD_LINKCOUNTER['BTN_RESET_COUNTER']; ?>
-                </button>
-            </form>
-        </div>
-
-        <!-- Droplet Usage Example -->
-        <div class="droplet-usage-box">
-            <h3><?php echo $MOD_LINKCOUNTER['DROPLET_CODE_HEADING']; ?></h3>
-            <div class="code-block">
-                <code>[[LinkCounter?id=<?php echo $download['id']; ?>]]</code>
-                <button type="button" class="btn btn-sm btn-outline-primary copy-btn"
-                        onclick="copyToClipboard('[[LinkCounter?id=<?php echo $download['id']; ?>]]')">
-                    Copy
-                </button>
-            </div>
-            <p class="text-muted"><?php echo $MOD_LINKCOUNTER['DROPLET_CODE_INFO']; ?></p>
-        </div>
-    <?php endif; ?>
 </div>
 
-<script>
-// Toggle between URL and Page fields based on link type
-function toggleLinkFields() {
-    var linkType = document.getElementById('link_type').value;
-    var urlField = document.getElementById('url-field');
-    var pageField = document.getElementById('page-field');
-    var urlInput = document.getElementById('url');
-    var pageInput = document.getElementById('page_id');
+<?php if ($edit_mode): ?>
+<!-- Counter + Reset Card -->
+<div class="lc-card-inner">
+    <div class="lc-section-title">
+        <i class="fa fa-bar-chart"></i> <?php echo $MOD_LINKCOUNTER['TH_COUNTER']; ?>
+    </div>
+    <div class="lc-counter-row">
+        <span class="lc-counter-value"><?php echo number_format($download['counter'], 0, ',', '.'); ?></span>
+        <form method="post" action="<?php echo WB_URL; ?>/modules/linkcounter/reset_counter.php" style="display:inline;">
+            <?php echo $admin->getFTAN(); ?>
+            <input type="hidden" name="id" value="<?php echo (int)$download['id']; ?>">
+            <button type="submit" class="lc-btn lc-btn-secondary"
+                    onclick="return confirm('<?php echo addslashes($MOD_LINKCOUNTER['CONFIRM_RESET']); ?>');">
+                <i class="fa fa-refresh"></i> <?php echo $MOD_LINKCOUNTER['BTN_RESET_COUNTER']; ?>
+            </button>
+        </form>
+    </div>
+</div>
+<?php endif; ?>
 
-    if (linkType === 'url') {
-        // Show URL field, hide page field
-        urlField.style.display = 'block';
+</div><!-- /.lc-stack -->
+</div><!-- /.lc-wrap -->
+
+<script>
+function toggleLinkFields() {
+    var type      = document.getElementById('link_type').value;
+    var urlField  = document.getElementById('url-field');
+    var pageField = document.getElementById('page-field');
+    var urlInput  = document.getElementById('url');
+    var pageInput = document.getElementById('page_id');
+    if (type === 'url') {
+        urlField.style.display  = 'block';
         pageField.style.display = 'none';
-        urlInput.required = true;
+        urlInput.required  = true;
         pageInput.required = false;
     } else {
-        // Show page field, hide URL field
-        urlField.style.display = 'none';
+        urlField.style.display  = 'none';
         pageField.style.display = 'block';
-        urlInput.required = false;
+        urlInput.required  = false;
         pageInput.required = true;
     }
 }
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    toggleLinkFields();
-});
-
-function copyToClipboard(text) {
-    // Create temporary textarea
-    var textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    document.body.appendChild(textarea);
-    textarea.select();
-
-    try {
-        document.execCommand('copy');
-        alert('Copied to clipboard!');
-    } catch (err) {
-        alert('Failed to copy');
-    }
-
-    document.body.removeChild(textarea);
-}
+document.addEventListener('DOMContentLoaded', function() { toggleLinkFields(); });
 </script>

@@ -67,6 +67,15 @@ if ($check_table->numRows() == 0) {
 }
 
 // ========================================
+// UPGRADE TO VERSION 1.2.0
+// ========================================
+// Add open_target column if missing (default '_self' = same window)
+$col_check = $database->query("SHOW COLUMNS FROM `$table` LIKE 'open_target'");
+if ($col_check->numRows() == 0) {
+    $database->query("ALTER TABLE `$table` ADD COLUMN `open_target` ENUM('_self','_blank') NOT NULL DEFAULT '_self' AFTER `active`");
+}
+
+// ========================================
 // UPGRADE TO VERSION 1.1.0
 // ========================================
 // Features added in version 1.1.0:
@@ -107,8 +116,8 @@ if ($check_droplets->numRows() > 0) {
 
     if ($check_droplet->numRows() > 0) {
         $droplet = $check_droplet->fetchRow(MYSQLI_ASSOC);
-        // Check if droplet code needs update (doesn't contain data-linkcounter-id)
-        if (strpos($droplet['code'], 'data-linkcounter-id') === false) {
+        // Update droplet if open_target support is missing
+        if (strpos($droplet['code'], 'open_target') === false) {
             $droplet_code = <<<'EOD'
 /**
  * Droplet: LinkCounter
@@ -150,6 +159,9 @@ $link_text = htmlspecialchars($download['title']);
 // Generate track URL
 $track_url = WB_URL . '/modules/linkcounter/track.php?id=' . (int)$id;
 
+$open_target = isset($download['open_target']) ? $download['open_target'] : '_self';
+$target_attr = ($open_target === '_blank') ? ' target="_blank" rel="noopener noreferrer"' : '';
+
 // Load frontend JavaScript once (for crawler protection)
 static $js_loaded = false;
 $js_output = '';
@@ -159,7 +171,7 @@ if (!$js_loaded) {
 }
 
 // Return link with data-attribute for crawler protection (URL is already safe as ID is cast to int)
-return $js_output . '<a href="' . htmlspecialchars($track_url) . '" title="' . $link_text . '" data-linkcounter-id="' . (int)$id . '" class="linkcounter-link">' . $link_text . '</a>';
+return $js_output . '<a href="' . htmlspecialchars($track_url) . '"' . $target_attr . ' title="' . $link_text . '" data-linkcounter-id="' . (int)$id . '" class="linkcounter-link">' . $link_text . '</a>';
 EOD;
 
             $escaped_code = $database->escapeString($droplet_code);
@@ -174,8 +186,8 @@ EOD;
 
     if ($check_droplet->numRows() > 0) {
         $droplet = $check_droplet->fetchRow(MYSQLI_ASSOC);
-        // Check if droplet code needs update (doesn't contain data-linkcounter-id)
-        if (strpos($droplet['code'], 'data-linkcounter-id') === false) {
+        // Update droplet if open_target support is missing
+        if (strpos($droplet['code'], 'open_target') === false) {
             $droplet_code = <<<'EOD'
 /**
  * Droplet: LinkCounterStats
@@ -229,7 +241,9 @@ while ($row = $result->fetchRow(MYSQLI_ASSOC)) {
     $output .= '<td>' . htmlspecialchars(substr($row['description'], 0, 100)) . (strlen($row['description']) > 100 ? '...' : '') . '</td>';
     $output .= '<td><strong>' . number_format($row['counter'], 0, ',', '.') . '</strong></td>';
     $track_url = WB_URL . '/modules/linkcounter/track.php?id=' . (int)$row['id'];
-    $output .= '<td><a href="' . htmlspecialchars($track_url) . '" class="btn btn-sm btn-primary linkcounter-link" data-linkcounter-id="' . (int)$row['id'] . '">Link</a></td>';
+    $open_target = isset($row['open_target']) ? $row['open_target'] : '_self';
+    $target_attr = ($open_target === '_blank') ? ' target="_blank" rel="noopener noreferrer"' : '';
+    $output .= '<td><a href="' . htmlspecialchars($track_url) . '"' . $target_attr . ' class="btn btn-sm btn-primary linkcounter-link" data-linkcounter-id="' . (int)$row['id'] . '">Link</a></td>';
     $output .= '</tr>';
 }
 

@@ -70,8 +70,13 @@
                 var separator = baseUrl.indexOf('?') !== -1 ? '&' : '?';
                 var newUrl = baseUrl + separator + '_t=' + encodeURIComponent(encoded);
 
-                // Redirect to track URL with timestamps
-                window.location.href = newUrl;
+                // Redirect to track URL with timestamps, respecting target attribute
+                var target = this.getAttribute('target');
+                if (target === '_blank') {
+                    window.open(newUrl, '_blank', 'noopener,noreferrer');
+                } else {
+                    window.location.href = newUrl;
+                }
             });
         });
     });

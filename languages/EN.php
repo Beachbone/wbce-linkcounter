@@ -50,6 +50,7 @@ $MOD_LINKCOUNTER = array(
     'LABEL_PAGE'            => 'Internal Page',
     'LABEL_DESCRIPTION'     => 'Description',
     'LABEL_ACTIVE'          => 'Active',
+    'LABEL_OPEN_TARGET'     => 'Open in new tab',
     'LINK_TYPE_URL'         => 'External URL',
     'LINK_TYPE_PAGE'        => 'Internal Page',
     'SELECT_PAGE'           => '-- Select Page --',
@@ -62,6 +63,7 @@ $MOD_LINKCOUNTER = array(
     'HELP_PAGE'             => 'Select a page from your WBCE installation',
     'HELP_DESCRIPTION'      => 'Internal note or description',
     'HELP_ACTIVE'           => 'Only active links are displayed in frontend',
+    'HELP_OPEN_TARGET'      => 'Link will be opened in a new browser tab',
 
     // Buttons
     'BTN_SAVE'              => 'Save',

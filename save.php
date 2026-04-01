@@ -39,6 +39,7 @@ $url = isset($_POST['url']) ? trim($_POST['url']) : '';
 $page_id = isset($_POST['page_id']) && is_numeric($_POST['page_id']) ? (int)$_POST['page_id'] : null;
 $description = isset($_POST['description']) ? trim($_POST['description']) : '';
 $active = isset($_POST['active']) && $_POST['active'] == 1 ? 1 : 0;
+$open_target = (isset($_POST['open_target']) && $_POST['open_target'] === '_blank') ? '_blank' : '_self';
 
 // Validation
 $errors = array();
@@ -123,6 +124,7 @@ if ($id > 0) {
     $escaped_page_id = ($page_id === null) ? 'NULL' : (int)$page_id;
     $escaped_description = $database->escapeString($description);
     $escaped_active = (int)$active;
+    $escaped_open_target = $database->escapeString($open_target);
     $escaped_id = (int)$id;
 
     $sql = "UPDATE `$table` SET
@@ -131,6 +133,7 @@ if ($id > 0) {
             `url` = '$escaped_url',
             `page_id` = $escaped_page_id,
             `description` = '$escaped_description',
+            `open_target` = '$escaped_open_target',
             `active` = $escaped_active
             WHERE `id` = $escaped_id";
 
@@ -139,7 +142,7 @@ if ($id > 0) {
     if ($result) {
         $_SESSION['linkcounter_success'] = $MOD_LINKCOUNTER['SUCCESS_SAVED'];
     } else {
-        $_SESSION['linkcounter_error'] = $MOD_LINKCOUNTER['ERROR_SAVE_FAILED'];
+        $_SESSION['linkcounter_error'] = $MOD_LINKCOUNTER['ERROR_SAVE_FAILED'] . ' (' . $database->get_error() . ')';
     }
 } else {
     // Insert new link
@@ -150,16 +153,17 @@ if ($id > 0) {
     $escaped_page_id = ($page_id === null) ? 'NULL' : (int)$page_id;
     $escaped_description = $database->escapeString($description);
     $escaped_active = (int)$active;
+    $escaped_open_target = $database->escapeString($open_target);
 
-    $sql = "INSERT INTO `$table` (`title`, `link_type`, `url`, `page_id`, `description`, `active`)
-            VALUES ('$escaped_title', '$escaped_link_type', '$escaped_url', $escaped_page_id, '$escaped_description', $escaped_active)";
+    $sql = "INSERT INTO `$table` (`title`, `link_type`, `url`, `page_id`, `description`, `open_target`, `active`)
+            VALUES ('$escaped_title', '$escaped_link_type', '$escaped_url', $escaped_page_id, '$escaped_description', '$escaped_open_target', $escaped_active)";
 
     $result = $database->query($sql);
 
     if ($result) {
         $_SESSION['linkcounter_success'] = $MOD_LINKCOUNTER['SUCCESS_SAVED'];
     } else {
-        $_SESSION['linkcounter_error'] = $MOD_LINKCOUNTER['ERROR_SAVE_FAILED'];
+        $_SESSION['linkcounter_error'] = $MOD_LINKCOUNTER['ERROR_SAVE_FAILED'] . ' (' . $database->get_error() . ')';
     }
 }
 
