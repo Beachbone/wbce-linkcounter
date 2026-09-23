@@ -1,11 +1,11 @@
 <?php
 /**
- * Link Counter - Crawler Protection Settings
+ * Link Counter - Settings (Crawler Protection, Exit Notice)
  *
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.1.0
+ * @version     1.3.0
  */
 
 if(!defined('WB_PATH')) exit("Cannot access this file directly ".__FILE__);
@@ -57,6 +57,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_settings'])) {
         $database->query("UPDATE `$settings_table` SET `setting_value` = '$crawler_action'
                           WHERE `setting_key` = 'crawler_action'");
 
+        $exit_notice_text = isset($_POST['exit_notice_text']) ? trim((string)$_POST['exit_notice_text']) : '';
+        $exit_notice_text = str_replace(array("\r\n", "\r"), "\n", $exit_notice_text);
+        if (mb_strlen($exit_notice_text) > 255) {
+            $exit_notice_text = mb_substr($exit_notice_text, 0, 255);
+        }
+        $escaped_exit_text = $database->escapeString($exit_notice_text);
+        $database->query("INSERT INTO `$settings_table` (`setting_key`, `setting_value`)
+                          VALUES ('exit_notice_text', '$escaped_exit_text')
+                          ON DUPLICATE KEY UPDATE `setting_value` = '$escaped_exit_text'");
+
         $_SESSION['linkcounter_success'] = $MOD_LINKCOUNTER['SUCCESS_SETTINGS_SAVED'];
 
         // Redirect to prevent form resubmission
@@ -77,6 +87,7 @@ if ($settings_result && $settings_result->numRows() > 0) {
 $crawler_protection_enabled = isset($settings['crawler_protection_enabled']) ? $settings['crawler_protection_enabled'] : '0';
 $crawler_min_delay = isset($settings['crawler_min_delay']) ? (int)$settings['crawler_min_delay'] : 500;
 $crawler_action = isset($settings['crawler_action']) ? $settings['crawler_action'] : 'skip_count';
+$exit_notice_text = isset($settings['exit_notice_text']) ? $settings['exit_notice_text'] : '';
 
 // Include CSS
 echo '<link rel="stylesheet" href="' . WB_URL . '/modules/linkcounter/css/backend.css">';
@@ -171,6 +182,24 @@ echo '<link rel="stylesheet" href="' . WB_URL . '/modules/linkcounter/css/backen
                 </ul>
             </div>
 
+        </div>
+
+        <div class="settings-section" style="margin-top: 30px;">
+            <h3><?php echo $MOD_LINKCOUNTER['SETTINGS_EXIT_NOTICE']; ?></h3>
+            <p class="help-text"><?php echo $MOD_LINKCOUNTER['SETTINGS_EXIT_NOTICE_DESCRIPTION']; ?></p>
+
+            <div class="form-group">
+                <label for="exit_notice_text">
+                    <strong><?php echo $MOD_LINKCOUNTER['SETTINGS_EXIT_NOTICE_TEXT']; ?></strong>
+                </label>
+                <textarea id="exit_notice_text"
+                          name="exit_notice_text"
+                          rows="3"
+                          maxlength="255"
+                          class="form-control"
+                          placeholder="<?php echo htmlspecialchars($MOD_LINKCOUNTER['EXIT_NOTICE_DEFAULT_TEXT']); ?>"><?php echo htmlspecialchars($exit_notice_text); ?></textarea>
+                <p class="help-text"><?php echo $MOD_LINKCOUNTER['SETTINGS_EXIT_NOTICE_TEXT_HELP']; ?></p>
+            </div>
         </div>
 
         <!-- Save Button -->

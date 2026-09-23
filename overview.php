@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.2.0
+ * @version     1.3.0
  */
 
 if(!defined('WB_PATH')) exit("Cannot access this file directly ".__FILE__);
@@ -164,6 +164,9 @@ if (isset($_SESSION['linkcounter_errors']) && is_array($_SESSION['linkcounter_er
                     <strong><?php echo htmlspecialchars($row['title']); ?></strong>
                     <?php if (!empty($row['open_target']) && $row['open_target'] === '_blank'): ?>
                         <i class="fa fa-external-link lc-icon-target" title="Neuer Tab"></i>
+                    <?php endif; ?>
+                    <?php if (!empty($row['exit_notice']) && $row['link_type'] === 'url'): ?>
+                        <i class="fa fa-sign-out lc-icon-target" title="<?php echo htmlspecialchars($MOD_LINKCOUNTER['TITLE_EXIT_NOTICE_ICON']); ?>"></i>
                     <?php endif; ?>
                     <?php if (!empty($row['description'])): ?>
                         <br><span class="lc-muted">

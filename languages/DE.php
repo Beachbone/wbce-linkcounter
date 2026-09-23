@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.1.0
+ * @version     1.3.0
  */
 
 if (!defined('WB_PATH')) {
@@ -64,6 +64,16 @@ $MOD_LINKCOUNTER = array(
     'HELP_DESCRIPTION'      => 'Interne Notiz oder Beschreibung',
     'HELP_ACTIVE'           => 'Nur aktive Links werden im Frontend angezeigt',
     'HELP_OPEN_TARGET'      => 'Link wird in einem neuen Browser-Tab geöffnet',
+    'LABEL_EXIT_NOTICE'     => 'Hinweis beim Verlassen der Website',
+    'HELP_EXIT_NOTICE'      => 'Vor der Weiterleitung auf eine fremde Website erscheint eine Hinweisseite. Gezählt wird erst beim Klick auf „Weiter“. Den Text legen Sie unter Einstellungen fest.',
+    'TITLE_EXIT_NOTICE_ICON' => 'Mit Hinweis beim Verlassen',
+
+    // Exit Notice (Frontend)
+    'EXIT_NOTICE_TITLE'        => 'Sie verlassen diese Website',
+    'EXIT_NOTICE_DEFAULT_TEXT' => 'Sie werden jetzt zu {host} weitergeleitet. Für die Inhalte externer Websites ist ausschließlich deren Betreiber verantwortlich.',
+    'EXIT_NOTICE_TARGET'       => 'Ziel:',
+    'EXIT_NOTICE_CONTINUE'     => 'Weiter zu %s',
+    'EXIT_NOTICE_BACK'         => 'Zurück',
 
     // Buttons
     'BTN_SAVE'              => 'Speichern',
@@ -128,7 +138,7 @@ $MOD_LINKCOUNTER = array(
     'SORT_DATE_DESC'        => 'Datum (neueste zuerst)',
 
     // Settings
-    'HEADING_SETTINGS'              => 'Einstellungen - Crawler-Schutz',
+    'HEADING_SETTINGS'              => 'Einstellungen',
     'SETTINGS_CRAWLER_PROTECTION'   => 'Crawler-Schutz Konfiguration',
     'SETTINGS_CRAWLER_DESCRIPTION'  => 'Der Crawler-Schutz filtert automatisierte Link-Aufrufe anhand der Zeit zwischen Seitenaufbau und Klick. Dies reduziert Bot-Traffic in Ihren Statistiken.',
     'SETTINGS_ENABLE_PROTECTION'    => 'Crawler-Schutz aktivieren',
@@ -145,6 +155,10 @@ $MOD_LINKCOUNTER = array(
     'SETTINGS_HOW_POINT_3'          => 'Der Server prüft die Zeitdifferenz gegen die eingestellte Mindestzeit',
     'SETTINGS_HOW_POINT_4'          => 'Crawler ohne JavaScript oder mit zu kurzer Wartezeit werden automatisch gefiltert',
     'SUCCESS_SETTINGS_SAVED'        => 'Einstellungen erfolgreich gespeichert.',
+    'SETTINGS_EXIT_NOTICE'          => 'Hinweis beim Verlassen der Website',
+    'SETTINGS_EXIT_NOTICE_DESCRIPTION' => 'Diese Hinweisseite erscheint vor externen Links, bei denen die Option „Hinweis beim Verlassen der Website“ eingeschaltet ist.',
+    'SETTINGS_EXIT_NOTICE_TEXT'     => 'Hinweistext',
+    'SETTINGS_EXIT_NOTICE_TEXT_HELP' => 'Leer lassen für den Standardtext. Platzhalter: {host} = Zieldomain, {title} = Link-Titel. Maximal 255 Zeichen.',
 );
 
 ?>

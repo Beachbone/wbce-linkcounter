@@ -4,11 +4,22 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.1.0
+ * @version     1.3.0
  */
 
 (function() {
     'use strict';
+
+    // Guard against duplicate execution: WBCE's droplet processor does not
+    // deduplicate repeated droplet placeholders on the same page (core bug in
+    // processDroplets()), so this script tag can be emitted more than once if
+    // the tracked link's droplet is placed twice in the page content. Without
+    // this guard, click handlers would be attached twice per link, causing
+    // window.open() (for links with target=_blank) to fire twice.
+    if (window.__linkcounterInitialized) {
+        return;
+    }
+    window.__linkcounterInitialized = true;
 
     // Store page load timestamp
     var pageLoadTime = 0;

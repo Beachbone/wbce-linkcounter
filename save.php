@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.1.0
+ * @version     1.3.0
  */
 
 if (!defined('WB_PATH')) {
@@ -40,6 +40,7 @@ $page_id = isset($_POST['page_id']) && is_numeric($_POST['page_id']) ? (int)$_PO
 $description = isset($_POST['description']) ? trim($_POST['description']) : '';
 $active = isset($_POST['active']) && $_POST['active'] == 1 ? 1 : 0;
 $open_target = (isset($_POST['open_target']) && $_POST['open_target'] === '_blank') ? '_blank' : '_self';
+$exit_notice = (isset($_POST['exit_notice']) && $_POST['exit_notice'] == 1 && $link_type === 'url') ? 1 : 0;
 
 // Validation
 $errors = array();
@@ -134,6 +135,7 @@ if ($id > 0) {
             `page_id` = $escaped_page_id,
             `description` = '$escaped_description',
             `open_target` = '$escaped_open_target',
+            `exit_notice` = " . (int)$exit_notice . ",
             `active` = $escaped_active
             WHERE `id` = $escaped_id";
 
@@ -155,8 +157,8 @@ if ($id > 0) {
     $escaped_active = (int)$active;
     $escaped_open_target = $database->escapeString($open_target);
 
-    $sql = "INSERT INTO `$table` (`title`, `link_type`, `url`, `page_id`, `description`, `open_target`, `active`)
-            VALUES ('$escaped_title', '$escaped_link_type', '$escaped_url', $escaped_page_id, '$escaped_description', '$escaped_open_target', $escaped_active)";
+    $sql = "INSERT INTO `$table` (`title`, `link_type`, `url`, `page_id`, `description`, `open_target`, `exit_notice`, `active`)
+            VALUES ('$escaped_title', '$escaped_link_type', '$escaped_url', $escaped_page_id, '$escaped_description', '$escaped_open_target', " . (int)$exit_notice . ", $escaped_active)";
 
     $result = $database->query($sql);
 

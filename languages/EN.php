@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.1.0
+ * @version     1.3.0
  */
 
 if (!defined('WB_PATH')) {
@@ -64,6 +64,16 @@ $MOD_LINKCOUNTER = array(
     'HELP_DESCRIPTION'      => 'Internal note or description',
     'HELP_ACTIVE'           => 'Only active links are displayed in frontend',
     'HELP_OPEN_TARGET'      => 'Link will be opened in a new browser tab',
+    'LABEL_EXIT_NOTICE'     => 'Notice when leaving the website',
+    'HELP_EXIT_NOTICE'      => 'A notice page is shown before redirecting to a foreign website. The click is counted only when "Continue" is clicked. The text is set under Settings.',
+    'TITLE_EXIT_NOTICE_ICON' => 'With exit notice',
+
+    // Exit Notice (Frontend)
+    'EXIT_NOTICE_TITLE'        => 'You are leaving this website',
+    'EXIT_NOTICE_DEFAULT_TEXT' => 'You are now being redirected to {host}. The operators of external websites are solely responsible for their content.',
+    'EXIT_NOTICE_TARGET'       => 'Destination:',
+    'EXIT_NOTICE_CONTINUE'     => 'Continue to %s',
+    'EXIT_NOTICE_BACK'         => 'Back',
 
     // Buttons
     'BTN_SAVE'              => 'Save',
@@ -128,7 +138,7 @@ $MOD_LINKCOUNTER = array(
     'SORT_DATE_DESC'        => 'Date (newest first)',
 
     // Settings
-    'HEADING_SETTINGS'              => 'Settings - Crawler Protection',
+    'HEADING_SETTINGS'              => 'Settings',
     'SETTINGS_CRAWLER_PROTECTION'   => 'Crawler Protection Configuration',
     'SETTINGS_CRAWLER_DESCRIPTION'  => 'Crawler protection filters automated link calls based on the time between page load and click. This reduces bot traffic in your statistics.',
     'SETTINGS_ENABLE_PROTECTION'    => 'Enable crawler protection',
@@ -145,6 +155,10 @@ $MOD_LINKCOUNTER = array(
     'SETTINGS_HOW_POINT_3'          => 'The server checks the time difference against the configured minimum time',
     'SETTINGS_HOW_POINT_4'          => 'Crawlers without JavaScript or with too short wait time are automatically filtered',
     'SUCCESS_SETTINGS_SAVED'        => 'Settings saved successfully.',
+    'SETTINGS_EXIT_NOTICE'          => 'Notice when leaving the website',
+    'SETTINGS_EXIT_NOTICE_DESCRIPTION' => 'This notice page is shown before external links that have the option "Notice when leaving the website" enabled.',
+    'SETTINGS_EXIT_NOTICE_TEXT'     => 'Notice text',
+    'SETTINGS_EXIT_NOTICE_TEXT_HELP' => 'Leave empty for the default text. Placeholders: {host} = destination domain, {title} = link title. Maximum 255 characters.',
 );
 
 ?>

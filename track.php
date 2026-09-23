@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.1.0
+ * @version     1.3.0
  */
 
 if (!defined('WB_PATH')) {
@@ -56,10 +56,7 @@ if ($result->numRows() == 0) {
 
 $download = $result->fetchRow(MYSQLI_ASSOC);
 
-// === CRAWLER PROTECTION (OPTIONAL) ===
-$skip_counter = false;
-
-// Load crawler protection settings
+// Load module settings
 $settings_result = $database->query("SELECT `setting_key`, `setting_value` FROM `$settings_table`");
 $settings = array();
 if ($settings_result && $settings_result->numRows() > 0) {
@@ -67,6 +64,9 @@ if ($settings_result && $settings_result->numRows() > 0) {
         $settings[$row['setting_key']] = $row['setting_value'];
     }
 }
+
+// === CRAWLER PROTECTION (OPTIONAL) ===
+$skip_counter = false;
 
 $crawler_protection_enabled = isset($settings['crawler_protection_enabled']) && $settings['crawler_protection_enabled'] == '1';
 $min_delay = isset($settings['crawler_min_delay']) ? (int)$settings['crawler_min_delay'] : 500;
@@ -135,12 +135,6 @@ if ($crawler_protection_enabled && isset($_GET['_t']) && !empty($_GET['_t'])) {
 }
 // === END CRAWLER PROTECTION ===
 
-// Increment counter (only if not skipped by crawler protection)
-if (!$skip_counter) {
-    $update_sql = "UPDATE `$table` SET `counter` = `counter` + 1 WHERE `id` = $id";
-    $database->query($update_sql);
-}
-
 // Determine target URL based on link type
 if ($download['link_type'] == 'page' && !empty($download['page_id'])) {
     // Internal page - get page link from WBCE
@@ -202,6 +196,46 @@ if ($download['link_type'] == 'page' && !empty($download['page_id'])) {
         header('Location: ' . WB_URL);
         exit();
     }
+}
+
+// === EXIT NOTICE (OPTIONAL) ===
+// Shown only for URLs on a foreign host. Counting happens on the second
+// request (go=1), so visitors who turn back are not counted.
+$target_host = '';
+$is_external = false;
+if ($download['link_type'] == 'url') {
+    $target_host  = strtolower((string)parse_url($target_url, PHP_URL_HOST));
+    $current_host = strtolower((string)parse_url(WB_URL, PHP_URL_HOST));
+    $is_external  = ($target_host !== '' && $target_host !== $current_host);
+}
+
+if (!empty($download['exit_notice']) && $is_external && !isset($_GET['go'])) {
+    $lang = (file_exists(WB_PATH . '/modules/linkcounter/languages/' . LANGUAGE . '.php'))
+        ? LANGUAGE
+        : 'EN';
+    require_once(WB_PATH . '/modules/linkcounter/languages/' . $lang . '.php');
+
+    // Carry the crawler timestamp over so the second request is judged the same way
+    $continue_url = WB_URL . '/modules/linkcounter/track.php?id=' . $id . '&go=1';
+    if (isset($_GET['_t']) && is_string($_GET['_t']) && $_GET['_t'] !== '') {
+        $continue_url .= '&_t=' . rawurlencode($_GET['_t']);
+    }
+    $back_url = getSafeRedirectUrl();
+
+    $notice_text = isset($settings['exit_notice_text']) ? trim($settings['exit_notice_text']) : '';
+    if ($notice_text === '') {
+        $notice_text = $MOD_LINKCOUNTER['EXIT_NOTICE_DEFAULT_TEXT'];
+    }
+
+    require(dirname(__FILE__) . '/exit_notice.php');
+    exit();
+}
+// === END EXIT NOTICE ===
+
+// Increment counter (only if not skipped by crawler protection)
+if (!$skip_counter) {
+    $update_sql = "UPDATE `$table` SET `counter` = `counter` + 1 WHERE `id` = $id";
+    $database->query($update_sql);
 }
 
 // Redirect to target URL

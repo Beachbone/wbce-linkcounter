@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.2.0
+ * @version     1.3.0
  */
 
 if(!defined('WB_PATH')) exit("Cannot access this file directly ".__FILE__);
@@ -33,6 +33,7 @@ $download  = array(
     'page_id'     => null,
     'description' => '',
     'open_target' => '_self',
+    'exit_notice' => 0,
     'active'      => 1,
     'counter'     => 0,
 );
@@ -164,6 +165,19 @@ if (isset($_SESSION['linkcounter_errors']) && is_array($_SESSION['linkcounter_er
             </label>
         </div>
 
+        <div class="lc-toggle-row" id="exit-notice-row">
+            <div class="lc-toggle-label">
+                <div class="lc-toggle-title"><?php echo $MOD_LINKCOUNTER['LABEL_EXIT_NOTICE']; ?></div>
+                <div class="lc-toggle-hint"><?php echo $MOD_LINKCOUNTER['HELP_EXIT_NOTICE']; ?></div>
+            </div>
+            <label class="lc-switch">
+                <input type="checkbox" name="exit_notice" value="1"
+                       <?php echo !empty($download['exit_notice']) ? 'checked' : ''; ?>>
+                <span class="lc-switch-track"></span>
+                <span class="lc-switch-handle"></span>
+            </label>
+        </div>
+
         <div class="lc-toggle-row">
             <div class="lc-toggle-label">
                 <div class="lc-toggle-title"><?php echo $MOD_LINKCOUNTER['LABEL_ACTIVE']; ?></div>
@@ -219,14 +233,17 @@ function toggleLinkFields() {
     var pageField = document.getElementById('page-field');
     var urlInput  = document.getElementById('url');
     var pageInput = document.getElementById('page_id');
+    var exitRow   = document.getElementById('exit-notice-row');
     if (type === 'url') {
         urlField.style.display  = 'block';
         pageField.style.display = 'none';
+        exitRow.style.display   = '';
         urlInput.required  = true;
         pageInput.required = false;
     } else {
         urlField.style.display  = 'none';
         pageField.style.display = 'block';
+        exitRow.style.display   = 'none';
         urlInput.required  = false;
         pageInput.required = true;
     }

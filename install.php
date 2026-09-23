@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.1.0
+ * @version     1.3.0
  */
 
 if(!defined('WB_PATH')) exit("Cannot access this file directly ".__FILE__);
@@ -29,6 +29,7 @@ if ($check_table->numRows() == 0) {
         `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         `open_target` ENUM('_self','_blank') NOT NULL DEFAULT '_self',
+        `exit_notice` TINYINT(1) NOT NULL DEFAULT 0,
         `active` TINYINT(1) NOT NULL DEFAULT 1,
         PRIMARY KEY (`id`),
         INDEX `idx_active` (`active`),
@@ -61,6 +62,10 @@ if ($check_settings->numRows() == 0) {
     $database->query("INSERT INTO `$settings_table` (`setting_key`, `setting_value`)
                       VALUES ('crawler_action', 'skip_count')");
 }
+
+// Exit notice text (empty = language default)
+$database->query("INSERT IGNORE INTO `$settings_table` (`setting_key`, `setting_value`)
+                  VALUES ('exit_notice_text', '')");
 
 // Install Droplets
 $droplet_table = TABLE_PREFIX . 'mod_droplets';

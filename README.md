@@ -1,6 +1,6 @@
 # Link Counter - WBCE CMS Module
 
-**Version:** 1.1.0
+**Version:** 1.3.0
 **Author:** WBCE Community, Beach
 **License:** MIT License
 **Platform:** WBCE CMS 1.4.x
@@ -17,6 +17,7 @@ Link Counter is a WBCE CMS module that allows you to track clicks on links with 
 - ✅ **NEW in 1.1.0:** Crawler protection - Filter automated bot traffic
 - ✅ **NEW in 1.1.0:** Configurable time-based detection (default: 500ms)
 - ✅ **NEW in 1.1.0:** Two protection modes: Skip count or block redirect
+- ✅ **NEW in 1.3.0:** Optional exit notice page before external links
 - ✅ Active/Inactive status for links
 - ✅ Easy integration via Droplets
 - ✅ Export functionality (CSV)
@@ -139,6 +140,19 @@ The crawler protection uses time-based detection to filter automated traffic:
 - ⚠️ Not foolproof - advanced bots can potentially bypass it
 - ⚠️ Requires JavaScript - crawlers without JS are automatically filtered
 
+## Exit Notice (NEW in 1.3.0)
+
+For external links you can show a notice page before the visitor leaves your website (e.g. "You are leaving this website and will be redirected to example.com").
+
+- Enable it per link: **Edit link → "Notice when leaving the website"** (only available for external URLs)
+- Set the text once under **Settings → Notice when leaving the website**
+  - Placeholders: `{host}` = destination domain, `{title}` = link title
+  - Leave empty to use the default text of the current language
+- The notice is only shown if the destination host differs from your own host
+- The click is counted when the visitor clicks **Continue**, not when the notice is shown
+- Works together with "Open in new tab" and crawler protection
+- The notice page is marked `noindex, nofollow` and is not cached
+
 ## Security Features
 
 This module implements several security measures:
@@ -158,13 +172,14 @@ This module implements several security measures:
 linkcounter/
 ├── add.php              - Add/Edit link form
 ├── delete.php           - Delete link handler
+├── exit_notice.php      - Exit notice page (included by track.php, NEW in 1.3.0)
 ├── export.php           - CSV export
 ├── info.php             - Module information
 ├── install.php          - Installation script
 ├── overview.php         - Main overview page
 ├── reset_counter.php    - Reset counter handler
 ├── save.php             - Save link handler
-├── settings.php         - Crawler protection settings (NEW in 1.1.0)
+├── settings.php         - Settings: crawler protection, exit notice text
 ├── statistics.php       - Statistics view
 ├── tool.php             - Tool entry point
 ├── track.php            - Click tracking & redirect with crawler protection

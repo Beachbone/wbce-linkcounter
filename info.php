@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.2.0
+ * @version     1.3.0
  */
 
 if(!defined('WB_PATH')) exit("Cannot access this file directly ".__FILE__);
@@ -13,7 +13,7 @@ if(!defined('WB_PATH')) exit("Cannot access this file directly ".__FILE__);
 $module_directory   = 'linkcounter';
 $module_name        = 'Link Counter';
 $module_function    = 'tool';
-$module_version     = '1.2.0';
+$module_version     = '1.3.0';
 $module_platform    = '1.4.x';
 $module_author      = 'WBCE Community, Beach';
 $module_license     = 'MIT License';

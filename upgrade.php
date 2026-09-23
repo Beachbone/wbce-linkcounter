@@ -5,7 +5,7 @@
  * @author      WBCE Community, Beach
  * @copyright   2026-01 WBCE Community, Beach
  * @license     MIT License
- * @version     1.1.0
+ * @version     1.3.0
  */
 
 if(!defined('WB_PATH')) exit("Cannot access this file directly ".__FILE__);
@@ -103,6 +103,17 @@ if ($check_settings->numRows() == 0) {
     $database->query("INSERT INTO `$settings_table` (`setting_key`, `setting_value`)
                       VALUES ('crawler_action', 'skip_count')");
 }
+
+// ========================================
+// UPGRADE TO VERSION 1.3.0
+// ========================================
+// Exit notice: per-link toggle + global notice text
+$col_check = $database->query("SHOW COLUMNS FROM `$table` LIKE 'exit_notice'");
+if ($col_check->numRows() == 0) {
+    $database->query("ALTER TABLE `$table` ADD COLUMN `exit_notice` TINYINT(1) NOT NULL DEFAULT 0 AFTER `open_target`");
+}
+$database->query("INSERT IGNORE INTO `$settings_table` (`setting_key`, `setting_value`)
+                  VALUES ('exit_notice_text', '')");
 
 // Update droplet codes to include data-attributes for crawler protection (version 1.1.0+)
 $droplet_table = TABLE_PREFIX . 'mod_droplets';
