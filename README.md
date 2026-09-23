@@ -1,196 +1,46 @@
-# Link Counter - WBCE CMS Module
+# Link Counter – WBCE CMS Module
 
-**Version:** 1.3.0
-**Author:** WBCE Community, Beach
-**License:** MIT License
-**Platform:** WBCE CMS 1.4.x
+Counts clicks on links (external URLs or internal WBCE pages) and shows the statistics in the backend.
 
-## Description
-
-Link Counter is a WBCE CMS module that allows you to track clicks on links with detailed statistics. Perfect for monitoring downloads, external links, or any other links you want to track. Includes advanced crawler protection to filter automated bot traffic from your statistics.
+**Version:** 1.3.0 · **Platform:** WBCE CMS 1.4+ · **License:** MIT · **Author:** WBCE Community, Beach
 
 ## Features
 
-- ✅ Track clicks on external URLs and internal pages
-- ✅ Two link types: External URL or Internal WBCE page
-- ✅ Individual link statistics with click counter
-- ✅ **NEW in 1.1.0:** Crawler protection - Filter automated bot traffic
-- ✅ **NEW in 1.1.0:** Configurable time-based detection (default: 500ms)
-- ✅ **NEW in 1.1.0:** Two protection modes: Skip count or block redirect
-- ✅ **NEW in 1.3.0:** Optional exit notice page before external links
-- ✅ Active/Inactive status for links
-- ✅ Easy integration via Droplets
-- ✅ Export functionality (CSV)
-- ✅ Filter and sort options
-- ✅ Secure implementation with CSRF protection
-- ✅ URL validation against malicious links
+- Tracked links to external URLs or internal WBCE pages, each with its own click counter
+- Per link: active/inactive, open in new tab, optional exit notice before leaving the website
+- Crawler protection: time-based bot filter (optional)
+- Overview with filter and sort, CSV export, counter reset
+- Two droplets for the frontend: single link and statistics table
+- German and English
 
-## Installation
+## Installation & Upgrade
 
-1. Download the module files
-2. Upload to `/modules/linkcounter/` in your WBCE installation
-3. Go to WBCE Backend → Add-ons → Modules
-4. Install the "Link Counter" module
-5. The module will automatically create:
-   - Database table `mod_linkcounter`
-   - Database table `mod_linkcounter_settings` (for crawler protection)
-   - Two droplets: `LinkCounter` and `LinkCounterStats`
-
-## Upgrade from 1.0.0 to 1.1.0
-
-The upgrade is automatic:
-1. Upload the new module files
-2. Go to WBCE Backend → Add-ons → Modules
-3. Click "Upgrade" for Link Counter
-4. The upgrade script will automatically:
-   - Create the settings table
-   - Add default crawler protection settings (disabled by default)
-   - Update droplets to support crawler protection
-5. Configure crawler protection in Settings (optional)
+Upload the release ZIP via **Backend → Add-ons → Modules → Install module**.
+On upgrade, new database columns, settings and droplet code are added automatically; existing links and counters are kept.
 
 ## Usage
 
-### Admin Interface
+Manage links under **Backend → Admin-Tools → Link Counter**.
 
-Access the module via Backend → Admin-Tools → Link Counter
+| Droplet | Output |
+|---|---|
+| `[[LinkCounter?id=5]]` | Tracked link, link text = title |
+| `[[LinkCounterStats?limit=10]]` | Table of the most clicked links (default 10) |
 
-**Add a new link:**
-1. Click "Add New"
-2. Enter title and description
-3. Choose link type (URL or Page)
-4. Set active status
-5. Save
+## Settings
 
-**View statistics:**
-- Overview shows all links with click counters
-- Filter by active/inactive
-- Sort by title, clicks, or date
+**Crawler protection** – JavaScript measures the time between page load and click. Faster clicks than the minimum delay (default 500 ms) are treated as bots: either redirected without counting (recommended) or not redirected at all. Clients without JavaScript are not counted while protection is enabled.
 
-**Configure crawler protection (NEW in 1.1.0):**
-1. Click "Settings" button in the overview
-2. Enable crawler protection (checkbox)
-3. Set minimum delay in milliseconds (default: 500ms)
-   - Clicks faster than this delay are detected as crawlers
-4. Choose action when crawler detected:
-   - **Redirect without counting** (recommended) - Crawler sees the target but isn't counted
-   - **Do not redirect** - Crawler is blocked and returned to referring page
-5. Save settings
+**Exit notice** – For external links with the option enabled, a notice page is shown before redirecting. The text is set once in the settings (placeholders `{host}`, `{title}`; empty = default text). The click is counted only when the visitor clicks *Continue*. The notice is skipped if the target is on your own host.
 
-### Droplets
+## Privacy
 
-#### LinkCounter
-Creates a tracked link using the title from database.
+The module stores one aggregated counter per link. No IP addresses, cookies, user agents or per-click records are stored.
 
-**Syntax:**
-```
-[[LinkCounter?id=1]]
-```
+## Security
 
-**Parameters:**
-- `id` (required) - The ID of the link to display
+CSRF tokens (FTAN) for all actions, escaped database input and HTML output, only `http(s)` targets and relative URLs allowed (no `javascript:`, `data:` etc.).
 
-**Example:**
-```
-[[LinkCounter?id=5]]
-```
+## Changelog & License
 
-#### LinkCounterStats
-Displays a table with link statistics.
-
-**Syntax:**
-```
-[[LinkCounterStats?limit=10]]
-```
-
-**Parameters:**
-- `limit` (optional) - Maximum number of links to show (default: 10)
-
-**Example:**
-```
-[[LinkCounterStats?limit=5]]
-```
-
-## Crawler Protection (NEW in 1.1.0)
-
-### How It Works
-
-The crawler protection uses time-based detection to filter automated traffic:
-
-1. **JavaScript Timestamps**: When a page loads, JavaScript records the page load time
-2. **Click Detection**: When a link is clicked, the time difference is calculated
-3. **Obfuscation**: Timestamps are XOR-encoded and Base64-encoded before transmission
-4. **Server Validation**: The server checks if the time difference exceeds the minimum delay
-5. **Action**: If too fast, the configured action is taken (skip count or block)
-
-### Key Features
-
-- **Optional**: Can be enabled/disabled anytime
-- **Configurable**: Set minimum delay (100-10000ms, default: 500ms)
-- **Two Modes**:
-  - Skip count (recommended): Redirects but doesn't count the click
-  - Block: Returns user to referring page without redirect
-- **Backwards Compatible**: Works with existing links without modification
-- **Fallback**: Links work normally without JavaScript (treated as potential crawler)
-
-### Effectiveness
-
-- ✅ Filters 90%+ of automated crawler traffic
-- ✅ Transparent for normal users (500ms = 0.5 seconds is very fast for humans)
-- ✅ No impact on legitimate clicks
-- ⚠️ Not foolproof - advanced bots can potentially bypass it
-- ⚠️ Requires JavaScript - crawlers without JS are automatically filtered
-
-## Exit Notice (NEW in 1.3.0)
-
-For external links you can show a notice page before the visitor leaves your website (e.g. "You are leaving this website and will be redirected to example.com").
-
-- Enable it per link: **Edit link → "Notice when leaving the website"** (only available for external URLs)
-- Set the text once under **Settings → Notice when leaving the website**
-  - Placeholders: `{host}` = destination domain, `{title}` = link title
-  - Leave empty to use the default text of the current language
-- The notice is only shown if the destination host differs from your own host
-- The click is counted when the visitor clicks **Continue**, not when the notice is shown
-- Works together with "Open in new tab" and crawler protection
-- The notice page is marked `noindex, nofollow` and is not cached
-
-## Security Features
-
-This module implements several security measures:
-
-- ✅ **CSRF Protection:** All state-changing actions use FTAN tokens
-- ✅ **SQL Injection Prevention:** All queries use proper escaping
-- ✅ **XSS Protection:** All output is properly escaped
-- ✅ **URL Validation:** Dangerous URL schemes are blocked (javascript:, data:, etc.)
-- ✅ **Open Redirect Prevention:** URLs are validated before redirect
-- ✅ **Crawler Protection:** Optional time-based bot detection (v1.1.0+)
-- ✅ **Timestamp Obfuscation:** XOR + Base64 encoding prevents easy tampering
-
-
-## Files
-
-```
-linkcounter/
-├── add.php              - Add/Edit link form
-├── delete.php           - Delete link handler
-├── exit_notice.php      - Exit notice page (included by track.php, NEW in 1.3.0)
-├── export.php           - CSV export
-├── info.php             - Module information
-├── install.php          - Installation script
-├── overview.php         - Main overview page
-├── reset_counter.php    - Reset counter handler
-├── save.php             - Save link handler
-├── settings.php         - Settings: crawler protection, exit notice text
-├── statistics.php       - Statistics view
-├── tool.php             - Tool entry point
-├── track.php            - Click tracking & redirect with crawler protection
-├── uninstall.php        - Uninstallation script
-├── upgrade.php          - Upgrade script
-├── css/                 - Stylesheets (backend.css, frontend.css)
-├── js/                  - JavaScript files (backend.js, frontend.js)
-└── languages/           - Language files (DE, EN)
-```
-
-## License
-
-This module is licensed under the MIT License.
-See LICENSE file for details.
+See [CHANGELOG.md](CHANGELOG.md) and [LICENSE](LICENSE).
